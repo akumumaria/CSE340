@@ -1,5 +1,7 @@
-<%- include("partials/header") %>
+<h1>Service Project Categories</h1>
 
-<h1>Welcome to Home Page</h1>
-
-<%- include("partials/footer") %>
+<ul>
+    <% categories.forEach(category => { %>
+        <li><%= category.name %></li>
+    <% }) %>
+</ul>

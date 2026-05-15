@@ -5,27 +5,46 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Set EJS
 app.set("view engine", "ejs");
-
-// Static files
 app.use(express.static(path.join(__dirname, "public")));
 
-// Routes
+const categoriesModel = require("./src/models/categories");
+const projectsModel = require("./src/models/projects");
+
 app.get("/", (req, res) => {
     res.render("home", { title: "Home" });
 });
 
-app.get("/organizations", (req, res) => {
-    res.render("organizations", { title: "Organizations" });
+const organizationsModel = require("./src/models/organizations");
+
+app.get("/organizations", async (req, res) => {
+    try {
+        const organizations = await organizationsModel.getAllOrganizations();
+        res.render("organizations", { organizations });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error retrieving organizations");
+    }
 });
 
-app.get("/projects", (req, res) => {
-    res.render("projects", { title: "Projects" });
+app.get("/projects", async (req, res) => {
+    try {
+        const projects = await projectsModel.getAllProjects();
+        res.render("projects", { projects });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error retrieving projects");
+    }
 });
 
-app.get("/categories", (req, res) => {
-    res.render("categories", { title: "Categories" });
+app.get("/categories", async (req, res) => {
+    try {
+        const categories = await categoriesModel.getAllCategories();
+        res.render("categories", { categories });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error retrieving categories");
+    }
 });
 
 app.listen(PORT, () => {

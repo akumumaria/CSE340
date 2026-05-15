@@ -3,3 +3,14 @@
 <h1>Welcome to Home Page</h1>
 
 <%- include("partials/footer") %>
+<h1>Service Projects</h1>
+
+<ul>
+    <% projects.forEach(project => { %>
+        <li>
+            <%= project.project_date %>: 
+            <%= project.title %> 
+            (<%= project.organization_name %>)
+        </li>
+    <% }) %>
+</ul>

@@ -1,5 +1,11 @@
 <%- include("partials/header") %>
 
-<h1>Welcome to Home Page</h1>
+<h1>Organizations</h1>
+
+<ul>
+	<% organizations.forEach(org => { %>
+		<li><%= org.name %></li>
+	<% }) %>
+</ul>
 
 <%- include("partials/footer") %>
