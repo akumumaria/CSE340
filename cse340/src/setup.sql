@@ -50,8 +50,8 @@ CREATE TABLE project_categories (
 -- =========================
 INSERT INTO organizations (name, contact_email, description, logo_file)
 VALUES
-('Red Cross', 'info@redcross.org', 'Humanitarian organization', 'CSE340/cse340/public/images/redcross.webp'),
-('UNICEF', 'info@unicef.org', 'Child support organization', 'CSE340/cse340/public/images/unicef.webp');
+('Red Cross', 'info@redcross.org', 'Humanitarian organization', 'images/redcross.webp'),
+('UNICEF', 'info@unicef.org', 'Child support organization', 'images/unicef.webp');
 
 -- =========================
 -- PROJECTS DATA
