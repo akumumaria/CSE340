@@ -10,9 +10,11 @@ DROP TABLE IF EXISTS organizations;
 
 CREATE TABLE organizations (
     organization_id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL
+    name TEXT NOT NULL,
+    contact_email TEXT NOT NULL,
+    description TEXT,
+    logo_file TEXT
 );
-
 CREATE TABLE projects (
     project_id SERIAL PRIMARY KEY,
     organization_id INTEGER NOT NULL REFERENCES organizations(organization_id) ON DELETE CASCADE,
@@ -33,11 +35,30 @@ CREATE TABLE project_categories (
     PRIMARY KEY (project_id, category_id)
 );
 
-INSERT INTO organizations (name) VALUES
-('Green Earth'),
-('Water for All'),
-('Bright Future');
-
+INSERT INTO organizations (
+    name,
+    contact_email,
+    description,
+    logo_file
+) VALUES
+(
+    'Green Earth',
+    'greenearth@email.com',
+    'Environmental conservation organization.',
+    '/images/greenearth.png'
+),
+(
+    'Water for All',
+    'waterforall@email.com',
+    'Provides clean water projects.',
+    '/images/waterforall.png'
+),
+(
+    'Bright Future',
+    'brightfuture@email.com',
+    'Supports schools and education.',
+    '/images/brightfuture.png'
+);
 INSERT INTO projects (organization_id, title, description, location, project_date) VALUES
 (1, 'Tree Planting', 'Plant trees in Kampala', 'Kampala', '2026-05-01'),
 (2, 'Clean Water', 'Water project', 'Mukono', '2026-05-02'),

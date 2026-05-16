@@ -4,7 +4,15 @@
 
 <ul>
 	<% organizations.forEach(org => { %>
-		<li><%= org.name %></li>
+		<li>
+			<h2><%= org.name %></h2>
+
+			<p>Email: <%= org.contact_email %></p>
+
+			<p>Description: <%= org.description %></p>
+
+			<img src="<%= org.logo_file %>" alt="Organization Logo" width="150">
+		</li>
 	<% }) %>
 </ul>
 
