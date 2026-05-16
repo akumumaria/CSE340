@@ -1,13 +1,9 @@
 const pool = require("../database");
 
 async function getAllCategories() {
-    const SQL = `
-        SELECT *
-        FROM categories
-        ORDER BY name;
-    `;
-
-    const result = await pool.query(SQL);
+    const result = await pool.query(
+        "SELECT * FROM categories ORDER BY name"
+    );
     return result.rows;
 }
 
