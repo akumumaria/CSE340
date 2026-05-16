@@ -12,8 +12,19 @@ const categoriesModel = require("./src/models/categories");
 const projectsModel = require("./src/models/projects");
 const organizationsModel = require("./src/models/organizations");
 
-app.get("/", (req, res) => {
-    res.render("home", { title: "Home" });
+app.get("/", async (req, res) => {
+    try {
+        const organizations = await organizationsModel.getAllOrganizations();
+
+        res.render("home", {
+            title: "Home",
+            organizations
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error loading home page");
+    }
 });
 
 app.get("/organizations", async (req, res) => {
