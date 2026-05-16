@@ -16,17 +16,22 @@ app.get("/", async (req, res) => {
     try {
         const organizations = await organizationsModel.getAllOrganizations();
 
+        console.log("HOME ORGS:", organizations); // IMPORTANT DEBUG
+
         res.render("home", {
             title: "Home",
-            organizations
+            organizations: organizations || []
         });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).send("Error loading home page");
+        console.error("HOME ROUTE ERROR:", error);
+
+        res.render("home", {
+            title: "Home",
+            organizations: []
+        });
     }
 });
-
 app.get("/organizations", async (req, res) => {
     try {
         const organizations = await organizationsModel.getAllOrganizations();
