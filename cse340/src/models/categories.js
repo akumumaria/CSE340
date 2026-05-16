@@ -1,12 +1,15 @@
-app.get("/categories", async (req, res) => {
-    try {
-        const categories = await categoriesModel.getAllCategories();
-        res.render("categories", {
-            categories,
-            title: "Categories"
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Error retrieving categories");
-    }
-});
+const pool = require("../database");
+
+async function getAllCategories() {
+    const SQL = `
+        SELECT *
+        FROM categories
+        ORDER BY name;
+    `;
+    const result = await pool.query(SQL);
+    return result.rows;
+}
+
+module.exports = {
+    getAllCategories
+};
