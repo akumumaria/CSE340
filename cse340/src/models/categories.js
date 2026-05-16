@@ -6,10 +6,9 @@ async function getAllCategories() {
         FROM categories
         ORDER BY name;
     `;
+
     const result = await pool.query(SQL);
     return result.rows;
 }
 
-module.exports = {
-    getAllCategories
-};
+module.exports = { getAllCategories };

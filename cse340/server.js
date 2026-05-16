@@ -10,17 +10,19 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const categoriesModel = require("./src/models/categories");
 const projectsModel = require("./src/models/projects");
+const organizationsModel = require("./src/models/organizations");
 
 app.get("/", (req, res) => {
     res.render("home", { title: "Home" });
 });
 
-const organizationsModel = require("./src/models/organizations");
-
 app.get("/organizations", async (req, res) => {
     try {
         const organizations = await organizationsModel.getAllOrganizations();
-        res.render("organizations", { organizations });
+        res.render("organizations", {
+            title: "Organizations",
+            organizations
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send("Error retrieving organizations");
@@ -30,7 +32,10 @@ app.get("/organizations", async (req, res) => {
 app.get("/projects", async (req, res) => {
     try {
         const projects = await projectsModel.getAllProjects();
-        res.render("projects", { projects });
+        res.render("projects", {
+            title: "Projects",
+            projects
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send("Error retrieving projects");
@@ -40,7 +45,10 @@ app.get("/projects", async (req, res) => {
 app.get("/categories", async (req, res) => {
     try {
         const categories = await categoriesModel.getAllCategories();
-        res.render("categories", { categories });
+        res.render("categories", {
+            title: "Categories",
+            categories
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send("Error retrieving categories");

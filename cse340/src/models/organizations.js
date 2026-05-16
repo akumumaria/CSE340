@@ -1,12 +1,10 @@
-app.get("/organizations", async (req, res) => {
-    try {
-        const organizations = await organizationsModel.getAllOrganizations();
-        res.render("organizations", {
-            organizations,
-            title: "Organizations"
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Error retrieving organizations");
-    }
-});
+const pool = require("../database");
+
+async function getAllOrganizations() {
+    const result = await pool.query(
+        "SELECT * FROM organizations ORDER BY organization_id ASC"
+    );
+    return result.rows;
+}
+
+module.exports = { getAllOrganizations };
