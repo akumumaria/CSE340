@@ -1,15 +1,16 @@
-<%- include("partials/header") %>
+<h1><%= project.title %></h1>
 
-<h1>Service Projects</h1>
+<p>
+  Organization:
+  <a href="/organization/<%= organization.organization_id %>">
+    <%= organization.name %>
+  </a>
+</p>
 
-<ul>
-    <% projects.forEach(project => { %>
-        <li>
-            <%= new Date(project.project_date).toLocaleDateString() %>
-            <%= project.title %> 
-            (<%= project.organization_name %>)
-        </li>
-    <% }) %>
-</ul>
+<h3>Categories</h3>
 
-<%- include("partials/footer") %>
+<% categories.forEach(cat => { %>
+  <a href="/category/<%= cat.category_id %>">
+    <span class="tag"><%= cat.name %></span>
+  </a>
+<% }) %>

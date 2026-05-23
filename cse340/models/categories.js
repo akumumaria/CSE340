@@ -9,16 +9,16 @@ async function getAllCategories() {
 }
 
 // Get category by ID
-async function getCategoryById(categoryId) {
+async function getCategoryById(id) {
   const result = await db.query(
     "SELECT * FROM categories WHERE category_id = $1",
-    [categoryId]
+    [id]
   );
   return result.rows[0];
 }
 
-// Get projects in a category
-async function getProjectsByCategory(categoryId) {
+// Get projects in category
+async function getProjectsByCategoryId(categoryId) {
   const result = await db.query(`
     SELECT p.*
     FROM projects p
@@ -33,5 +33,5 @@ async function getProjectsByCategory(categoryId) {
 module.exports = {
   getAllCategories,
   getCategoryById,
-  getProjectsByCategory,
+  getProjectsByCategoryId
 };

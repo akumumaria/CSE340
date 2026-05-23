@@ -1,11 +1,12 @@
 const db = require('../src/database');
 
-// Get all projects (next 5 upcoming)
+// Upcoming projects
 async function getUpcomingProjects() {
   const result = await db.query(`
     SELECT p.*, o.name AS organization_name
     FROM projects p
-    JOIN organizations o ON p.organization_id = o.organization_id
+    JOIN organizations o
+      ON p.organization_id = o.organization_id
     ORDER BY p.project_date
     LIMIT 5
   `);
@@ -14,10 +15,10 @@ async function getUpcomingProjects() {
 }
 
 // Get project by ID
-async function getProjectById(projectId) {
+async function getProjectById(id) {
   const result = await db.query(
     "SELECT * FROM projects WHERE project_id = $1",
-    [projectId]
+    [id]
   );
   return result.rows[0];
 }
@@ -27,19 +28,21 @@ async function getOrganizationByProjectId(projectId) {
   const result = await db.query(`
     SELECT o.*
     FROM organizations o
-    JOIN projects p ON p.organization_id = o.organization_id
+    JOIN projects p
+      ON o.organization_id = p.organization_id
     WHERE p.project_id = $1
   `, [projectId]);
 
   return result.rows[0];
 }
 
-// Get categories for a project
+// Get categories for project
 async function getCategoriesByProjectId(projectId) {
   const result = await db.query(`
     SELECT c.*
     FROM categories c
-    JOIN project_categories pc ON c.category_id = pc.category_id
+    JOIN project_categories pc
+      ON c.category_id = pc.category_id
     WHERE pc.project_id = $1
   `, [projectId]);
 
@@ -50,5 +53,5 @@ module.exports = {
   getUpcomingProjects,
   getProjectById,
   getOrganizationByProjectId,
-  getCategoriesByProjectId,
+  getCategoriesByProjectId
 };
