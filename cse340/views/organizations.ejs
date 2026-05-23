@@ -1,21 +1,11 @@
-<%- include("partials/header") %>
-
 <h1>Organizations</h1>
 
 <ul>
-	<% organizations.forEach(org => { %>
-		<li>
-
-			<h2><%= org.name %></h2>
-
-			<p>Email: <%= org.contact_email %></p>
-
-			<p>Description: <%= org.description %></p>
-
-			<img src="/<%= org.logo_file %>" alt="Organization Logo" width="150">
-
-		</li>
-	<% }) %>
+  <% organizations.forEach(org => { %>
+    <li>
+      <a href="/organization/<%= org.organization_id %>">
+        <%= org.name %>
+      </a>
+    </li>
+  <% }) %>
 </ul>
-
-<%- include("partials/footer") %>
