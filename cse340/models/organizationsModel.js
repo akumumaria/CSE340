@@ -1,23 +1,27 @@
-const pool = require('../src/database');
+// models/organizationModel.js
 
-// Get all organizations
+const pool = require("../src/database");
+
 async function getAllOrganizations() {
-  const result = await pool.query(
-    "SELECT * FROM organizations ORDER BY name"
-  );
+  const result = await pool.query(`
+    SELECT *
+    FROM organizations
+    ORDER BY name
+  `);
+
   return result.rows;
 }
 
-// Get organization by ID
 async function getOrganizationById(id) {
-  const result = await pool.query(
-    "SELECT * FROM organizations WHERE organization_id = $1",
-    [id]
-  );
+  const result = await pool.query(`
+    SELECT *
+    FROM organizations
+    WHERE organization_id = $1
+  `, [id]);
+
   return result.rows[0];
 }
 
-// Get projects for organization
 async function getProjectsByOrganization(id) {
   const result = await pool.query(`
     SELECT *
@@ -32,5 +36,5 @@ async function getProjectsByOrganization(id) {
 module.exports = {
   getAllOrganizations,
   getOrganizationById,
-  getProjectsByOrganization
+  getProjectsByOrganization,
 };

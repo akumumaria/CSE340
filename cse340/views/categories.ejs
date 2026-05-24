@@ -1,8 +1,12 @@
+<!-- views/categories.ejs -->
+
+<h1>Categories</h1>
+
 <ul>
-  <% categories.forEach(cat => { %>
+  <% categories.forEach(category => { %>
     <li>
-      <a href="/category/<%= cat.category_id %>">
-        <%= cat.name %>
+      <a href="/category/<%= category.category_id %>">
+        <%= category.name %>
       </a>
     </li>
   <% }) %>

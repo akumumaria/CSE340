@@ -1,3 +1,5 @@
+// server.js
+
 const express = require("express");
 const path = require("path");
 require("dotenv").config();
@@ -5,88 +7,85 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// View engine
+// =========================
+// VIEW ENGINE
+// =========================
 app.set("view engine", "ejs");
 
-// Static files (public folder)
+
+// =========================
+// MIDDLEWARE
+// =========================
+
+// Static files
 app.use(express.static(path.join(__dirname, "public")));
 
-// Models
-const categoriesModel = require("./src/models/categories");
-const projectsModel = require("./src/models/projects");
-const organizationsModel = require("./src/models/organizations");
+// Parse form data
+app.use(express.urlencoded({ extended: true }));
 
 
 // =========================
-// HOME ROUTE (NO DATABASE)
+// ROUTES
 // =========================
+
+const categoryRoutes =
+  require("./routes/categoryRoutes");
+
+const organizationRoutes =
+  require("./routes/organizationRoutes");
+
+const projectRoutes =
+  require("./routes/projectRoutes");
+
+
+// =========================
+// USE ROUTES
+// =========================
+
+app.use("/", categoryRoutes);
+app.use("/", organizationRoutes);
+app.use("/", projectRoutes);
+
+
+// =========================
+// HOME ROUTE
+// =========================
+
 app.get("/", (req, res) => {
-    res.render("home", {
-        title: "Home"
-    });
+  res.render("home", {
+    title: "Home",
+  });
 });
 
 
 // =========================
-// ORGANIZATIONS ROUTE
+// 404 ERROR PAGE
 // =========================
-app.get("/organizations", async (req, res) => {
-    try {
-        const organizations = await organizationsModel.getAllOrganizations();
 
-        res.render("organizations", {
-            title: "Organizations",
-            organizations
-        });
-
-    } catch (error) {
-        console.error("Error retrieving organizations:", error);
-        res.status(500).send("Error retrieving organizations");
-    }
+app.use((req, res) => {
+  res.status(404).render("404", {
+    title: "404 - Page Not Found",
+  });
 });
 
 
 // =========================
-// PROJECTS ROUTE
+// 500 ERROR PAGE
 // =========================
-app.get("/projects", async (req, res) => {
-    try {
-        const projects = await projectsModel.getAllProjects();
 
-        res.render("projects", {
-            title: "Projects",
-            projects
-        });
+app.use((err, req, res, next) => {
+  console.error(err.stack);
 
-    } catch (error) {
-        console.error("Error retrieving projects:", error);
-        res.status(500).send("Error retrieving projects");
-    }
-});
-
-
-// =========================
-// CATEGORIES ROUTE
-// =========================
-app.get("/categories", async (req, res) => {
-    try {
-        const categories = await categoriesModel.getAllCategories();
-
-        res.render("categories", {
-            title: "Categories",
-            categories
-        });
-
-    } catch (error) {
-        console.error("Error retrieving categories:", error);
-        res.status(500).send("Error retrieving categories");
-    }
+  res.status(500).render("500", {
+    title: "500 - Server Error",
+  });
 });
 
 
 // =========================
 // START SERVER
 // =========================
+
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

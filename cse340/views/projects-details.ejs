@@ -1,13 +1,26 @@
-<h1><%= category.name %></h1>
+<!-- views/project-details.ejs -->
 
-<h2>Projects</h2>
+<h1><%= project.name %></h1>
 
-<ul>
-  <% projects.forEach(project => { %>
-    <li>
-      <a href="/project/<%= project.project_id %>">
-        <%= project.title %>
-      </a>
-    </li>
+<p><%= project.description %></p>
+
+<h3>Organization</h3>
+
+<p>
+  <a href="/organization/<%= organization.organization_id %>">
+    <%= organization.name %>
+  </a>
+</p>
+
+<h3>Categories</h3>
+
+<div class="tags">
+  <% categories.forEach(category => { %>
+    <a
+      class="tag"
+      href="/category/<%= category.category_id %>"
+    >
+      <%= category.name %>
+    </a>
   <% }) %>
-</ul>
+</div>

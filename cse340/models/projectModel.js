@@ -1,6 +1,7 @@
-const db = require('../src/database');
+// models/projectModel.js
 
-// Upcoming projects
+const db = require("../src/database");
+
 async function getUpcomingProjects() {
   const result = await db.query(`
     SELECT p.*, o.name AS organization_name
@@ -14,16 +15,16 @@ async function getUpcomingProjects() {
   return result.rows;
 }
 
-// Get project by ID
 async function getProjectById(id) {
-  const result = await db.query(
-    "SELECT * FROM projects WHERE project_id = $1",
-    [id]
-  );
+  const result = await db.query(`
+    SELECT *
+    FROM projects
+    WHERE project_id = $1
+  `, [id]);
+
   return result.rows[0];
 }
 
-// Get organization for project
 async function getOrganizationByProjectId(projectId) {
   const result = await db.query(`
     SELECT o.*
@@ -36,7 +37,6 @@ async function getOrganizationByProjectId(projectId) {
   return result.rows[0];
 }
 
-// Get categories for project
 async function getCategoriesByProjectId(projectId) {
   const result = await db.query(`
     SELECT c.*
@@ -53,5 +53,5 @@ module.exports = {
   getUpcomingProjects,
   getProjectById,
   getOrganizationByProjectId,
-  getCategoriesByProjectId
+  getCategoriesByProjectId,
 };
