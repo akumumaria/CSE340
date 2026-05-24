@@ -5,11 +5,15 @@
 <h2>Projects</h2>
 
 <ul>
-  <% projects.forEach(project => { %>
-    <li>
-      <a href="/project/<%= project.project_id %>">
-        <%= project.name %>
-      </a>
-    </li>
-  <% }) %>
+  <% if (projects && projects.length > 0) { %>
+    <% projects.forEach(project => { %>
+      <li>
+        <a href="/project/<%= project.project_id %>">
+          <%= project.name %>
+        </a>
+      </li>
+    <% }) %>
+  <% } else { %>
+    <p>No projects found.</p>
+  <% } %>
 </ul>
