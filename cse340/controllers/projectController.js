@@ -1,6 +1,5 @@
-// controllers/projectController.js
-
-const projectModel = require("../models/projectModel");
+const projectModel =
+  require("../models/projectModel");
 
 async function projectDetailsPage(req, res) {
   try {
@@ -23,8 +22,9 @@ async function projectDetailsPage(req, res) {
       title: project.name,
       project,
       organization,
-      categories,
+      categories
     });
+
   } catch (error) {
     console.error(error);
     res.status(500).render("500");
@@ -32,5 +32,5 @@ async function projectDetailsPage(req, res) {
 }
 
 module.exports = {
-  projectDetailsPage,
+  projectDetailsPage
 };
