@@ -1,0 +1,15 @@
+<h1><%= organization.name %></h1>
+
+<p><%= organization.description %></p>
+
+<h2>Projects</h2>
+
+<ul>
+  <% projects.forEach(project => { %>
+    <li>
+      <a href="/project/<%= project.project_id %>">
+        <%= project.name %>
+      </a>
+    </li>
+  <% }) %>
+</ul>
