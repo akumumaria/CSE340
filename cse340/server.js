@@ -1,5 +1,3 @@
-// server.js
-
 const express = require("express");
 const path = require("path");
 require("dotenv").config();
@@ -7,85 +5,61 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// =========================
-// VIEW ENGINE
-// =========================
+/* =========================
+   VIEW ENGINE SETUP
+========================= */
 app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
-
-// =========================
-// MIDDLEWARE
-// =========================
-
-// Static files
+/* =========================
+   MIDDLEWARE
+========================= */
 app.use(express.static(path.join(__dirname, "public")));
-
-// Parse form data
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-
-// =========================
-// ROUTES
-// =========================
-
-const categoryRoutes =
-  require("./routes/categoryRoutes");
-
-const organizationRoutes =
-  require("./routes/organizationRoutes");
-
-const projectRoutes =
-  require("./routes/projectRoutes");
-
-
-// =========================
-// USE ROUTES
-// =========================
+/* =========================
+   ROUTES
+========================= */
+const categoryRoutes = require("./routes/categoryRoutes");
+const organizationRoutes = require("./routes/organizationRoutes");
+const projectRoutes = require("./routes/projectRoutes");
 
 app.use("/", categoryRoutes);
 app.use("/", organizationRoutes);
 app.use("/", projectRoutes);
 
-
-// =========================
-// HOME ROUTE
-// =========================
-
+/* =========================
+   HOME ROUTE
+========================= */
 app.get("/", (req, res) => {
   res.render("home", {
-    title: "Home",
+    title: "Home"
   });
 });
 
-
-// =========================
-// 404 ERROR PAGE
-// =========================
-
+/* =========================
+   404 ERROR HANDLER
+========================= */
 app.use((req, res) => {
   res.status(404).render("404", {
-    title: "404 - Page Not Found",
+    title: "Page Not Found"
   });
 });
 
-
-// =========================
-// 500 ERROR PAGE
-// =========================
-
+/* =========================
+   500 ERROR HANDLER
+========================= */
 app.use((err, req, res, next) => {
   console.error(err.stack);
-
   res.status(500).render("500", {
-    title: "500 - Server Error",
+    title: "Server Error"
   });
 });
 
-
-// =========================
-// START SERVER
-// =========================
-
+/* =========================
+   START SERVER
+========================= */
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
