@@ -1,13 +1,40 @@
-async function categoryDetailsPage(req, res) {
-  const categoryId = req.params.id;
+const categoryModel = require('../models/category-model');
 
-  const category = await categoryModel.getCategoryById(categoryId);
-  const projects = await categoryModel.getProjectsByCategory(categoryId);
+async function buildCategoryPage(req, res) {
+  try {
+    const categories = await categoryModel.getAllCategories();
 
-  if (!category) return res.status(404).render("404");
-
-  res.render("category-details", {
-    category,
-    projects,
-  });
+    res.render('categories', {
+      title: 'Categories',
+      categories
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).render('errors/error500');
+  }
 }
+
+async function buildCategoryDetails(req, res) {
+  try {
+    const categoryId = req.params.id;
+
+    const category = await categoryModel.getCategoryById(categoryId);
+
+    const projects =
+      await categoryModel.getProjectsByCategoryId(categoryId);
+
+    res.render('category-detail', {
+      title: category.name,
+      category,
+      projects
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).render('errors/error500');
+  }
+}
+
+module.exports = {
+  buildCategoryPage,
+  buildCategoryDetails
+};

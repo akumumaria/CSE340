@@ -1,31 +1,42 @@
-const db = require('../src/database');
+const pool = require('../database/');
 
-// Get all categories
 async function getAllCategories() {
-  const result = await db.query(
-    "SELECT * FROM categories ORDER BY name"
+  const result = await pool.query(
+    'SELECT * FROM categories ORDER BY name'
   );
   return result.rows;
 }
 
-// Get category by ID
-async function getCategoryById(id) {
-  const result = await db.query(
-    "SELECT * FROM categories WHERE category_id = $1",
-    [id]
+async function getCategoryById(categoryId) {
+  const result = await pool.query(
+    'SELECT * FROM categories WHERE id = $1',
+    [categoryId]
   );
   return result.rows[0];
 }
 
-// Get projects in category
 async function getProjectsByCategoryId(categoryId) {
-  const result = await db.query(`
-    SELECT p.*
-    FROM projects p
-    JOIN project_categories pc ON p.project_id = pc.project_id
-    WHERE pc.category_id = $1
-    ORDER BY p.project_date
-  `, [categoryId]);
+  const result = await pool.query(
+    `SELECT projects.*
+     FROM projects
+     JOIN project_categories
+     ON projects.id = project_categories.project_id
+     WHERE project_categories.category_id = $1`,
+    [categoryId]
+  );
+
+  return result.rows;
+}
+
+async function getCategoriesByProjectId(projectId) {
+  const result = await pool.query(
+    `SELECT categories.*
+     FROM categories
+     JOIN project_categories
+     ON categories.id = project_categories.category_id
+     WHERE project_categories.project_id = $1`,
+    [projectId]
+  );
 
   return result.rows;
 }
@@ -33,5 +44,6 @@ async function getProjectsByCategoryId(categoryId) {
 module.exports = {
   getAllCategories,
   getCategoryById,
-  getProjectsByCategoryId
+  getProjectsByCategoryId,
+  getCategoriesByProjectId
 };
