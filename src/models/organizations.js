@@ -1,6 +1,4 @@
-// models/organizationModel.js
-
-const pool = require("../src/database");
+const pool = require("../database");
 
 async function getAllOrganizations() {
   const result = await pool.query(`

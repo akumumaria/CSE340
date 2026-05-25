@@ -1,5 +1,5 @@
 const projectModel =
-  require("../models/projectModel");
+  require("../src/models/projects");
 
 async function projectsList(req, res) {
   try {
@@ -33,7 +33,7 @@ async function projectDetailsPage(req, res) {
     }
 
     res.render("project-details", {
-      title: project.name,
+      title: project.title,
       project,
       organization,
       categories
