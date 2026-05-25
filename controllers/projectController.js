@@ -1,6 +1,20 @@
 const projectModel =
   require("../models/projectModel");
 
+async function projectsList(req, res) {
+  try {
+    const projects = await projectModel.getUpcomingProjects();
+
+    res.render("projects", {
+      title: "Projects",
+      projects,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).render("500");
+  }
+}
+
 async function projectDetailsPage(req, res) {
   try {
     const projectId = req.params.id;
@@ -32,5 +46,6 @@ async function projectDetailsPage(req, res) {
 }
 
 module.exports = {
+  projectsList,
   projectDetailsPage
 };

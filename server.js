@@ -2,6 +2,8 @@ const express = require("express");
 const path = require("path");
 require("dotenv").config();
 
+console.log("DATABASE_URL loaded:", process.env.DATABASE_URL ? "YES" : "NO");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
