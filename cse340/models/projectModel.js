@@ -1,6 +1,4 @@
-// models/projectModel.js
-
-const db = require("../src/database");
+const db = require("../database");
 
 async function getUpcomingProjects() {
   const result = await db.query(`

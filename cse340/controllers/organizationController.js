@@ -1,6 +1,6 @@
 // controllers/organizationController.js
 
-const orgModel = require("../models/organizationModel");
+const orgModel = require("../src/models/organizations");
 
 async function organizationsPage(req, res) {
   try {

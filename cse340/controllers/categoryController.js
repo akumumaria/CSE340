@@ -1,14 +1,14 @@
 // controllers/categoryController.js
 
-const categoryModel = require("../models/categoryModel");
+const categories = require("../src/models/categories");
 
 async function buildCategoryPage(req, res) {
   try {
-    const categories = await categoryModel.getAllCategories();
+    const categoriesList = await categories.getAllCategories();
 
     res.render("categories", {
       title: "Categories",
-      categories,
+      categories: categoriesList,
     });
   } catch (error) {
     console.error(error);
@@ -21,10 +21,10 @@ async function buildCategoryDetails(req, res) {
     const categoryId = req.params.id;
 
     const category =
-      await categoryModel.getCategoryById(categoryId);
+      await categories.getCategoryById(categoryId);
 
     const projects =
-      await categoryModel.getProjectsByCategoryId(categoryId);
+      await categories.getProjectsByCategoryId(categoryId);
 
     if (!category) {
       return res.status(404).render("404");

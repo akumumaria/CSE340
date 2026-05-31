@@ -1,5 +1,19 @@
 const projectModel =
-  require("../models/projectModel");
+  require("../src/models/projects");
+
+async function projectsList(req, res) {
+  try {
+    const projects = await projectModel.getUpcomingProjects();
+
+    res.render("projects", {
+      title: "Projects",
+      projects,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).render("500");
+  }
+}
 
 async function projectDetailsPage(req, res) {
   try {
@@ -19,7 +33,7 @@ async function projectDetailsPage(req, res) {
     }
 
     res.render("project-details", {
-      title: project.name,
+      title: project.title,
       project,
       organization,
       categories
@@ -32,5 +46,6 @@ async function projectDetailsPage(req, res) {
 }
 
 module.exports = {
+  projectsList,
   projectDetailsPage
 };
