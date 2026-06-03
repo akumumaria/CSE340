@@ -1,4 +1,6 @@
-<h1>Add Project</h1>
+<%- include("partials/header") %>
+
+<h1>Edit Project</h1>
 
 <% if (errors) { %>
   <ul class="errors">
@@ -36,5 +38,7 @@
     <input type="date" name="project_date" required value="<%= project_date %>">
   </label>
 
-  <button type="submit">Add Project</button>
+  <button type="submit">Save Project</button>
 </form>
+
+<%- include("partials/footer") %>

@@ -10,7 +10,7 @@ const categoryRules = () => [
 const checkCategoryData = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.render('categories/new-category', {
+    return res.render('new-category', {
       title: 'New Category',
       errors,
       category_name: req.body.category_name,
@@ -22,11 +22,13 @@ const checkCategoryData = async (req, res, next) => {
 const checkUpdateCategoryData = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.render('categories/edit-category', {
+    return res.render('edit-category', {
       title: 'Edit Category',
       errors,
-      category_id: req.params.id,
-      category_name: req.body.category_name,
+      category: {
+        category_id: req.params.id,
+        name: req.body.category_name,
+      },
     });
   }
   next();

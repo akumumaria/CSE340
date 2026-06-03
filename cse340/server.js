@@ -6,6 +6,18 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 /* =========================
+   ERROR HANDLERS (top-level)
+========================= */
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('[UNHANDLED REJECTION]', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('[UNCAUGHT EXCEPTION]', error);
+  process.exit(1);
+});
+
+/* =========================
    VIEW ENGINE SETUP
 ========================= */
 app.set("view engine", "ejs");
@@ -18,6 +30,23 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log(`[REQUEST] ${req.method} ${req.path}`);
+  next();
+});
+
+// Temporary debug endpoint to check DB access and orgs rendering
+app.get('/debug/orgs', async (req, res) => {
+  try {
+    const orgModel = require('./models/organizationModel');
+    const orgs = await orgModel.getAllOrganizations();
+    res.json({ count: orgs.length, sample: orgs.slice(0,5) });
+  } catch (err) {
+    console.error('[DEBUG /debug/orgs] Error', err.message, err.stack);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 /* =========================
    ROUTES
 ========================= */
@@ -25,9 +54,16 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const organizationRoutes = require("./routes/organizationRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 
+console.log('[SERVER] Routes loaded successfully');
+
 app.use("/", categoryRoutes);
+console.log('[SERVER] Category routes mounted');
+
 app.use("/", organizationRoutes);
+console.log('[SERVER] Organization routes mounted');
+
 app.use("/", projectRoutes);
+console.log('[SERVER] Project routes mounted');
 
 /* =========================
    HOME ROUTE

@@ -1,6 +1,17 @@
+<%- include("partials/header") %>
+
 <h1><%= organization.name %></h1>
 
 <p><%= organization.description %></p>
+
+<% if (organization.website) { %>
+  <h3>Website</h3>
+  <p><a href="<%= organization.website %>" target="_blank" rel="noopener noreferrer"><%= organization.website %></a></p>
+<% } %>
+
+<p>
+  <a href="/organizations/edit-organization/<%= organization.organization_id %>">Edit organization</a>
+</p>
 
 <h2>Projects</h2>
 
@@ -9,7 +20,7 @@
     <% projects.forEach(project => { %>
       <li>
         <a href="/project/<%= project.project_id %>">
-          <%= project.name %>
+          <%= project.project_title %>
         </a>
       </li>
     <% }) %>
@@ -17,3 +28,5 @@
     <p>No projects found.</p>
   <% } %>
 </ul>
+
+<%- include("partials/footer") %>

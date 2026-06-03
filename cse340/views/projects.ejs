@@ -1,16 +1,24 @@
-<h1><%= project.title %></h1>
+<%- include("partials/header") %>
+
+<h1>Projects</h1>
 
 <p>
-  Organization:
-  <a href="/organization/<%= organization.organization_id %>">
-    <%= organization.name %>
-  </a>
+  <a href="/projects/new-project">Create New Project</a>
 </p>
 
-<h3>Categories</h3>
+<% if (projects && projects.length > 0) { %>
+  <ul>
+    <% projects.forEach(project => { %>
+      <li>
+        <a href="/project/<%= project.project_id %>">
+          <%= project.project_title %>
+        </a>
+        <span>— <%= project.organization_name %></span>
+      </li>
+    <% }) %>
+  </ul>
+<% } else { %>
+  <p>No projects found.</p>
+<% } %>
 
-<% categories.forEach(cat => { %>
-  <a href="/category/<%= cat.category_id %>">
-    <span class="tag"><%= cat.name %></span>
-  </a>
-<% }) %>
+<%- include("partials/footer") %>

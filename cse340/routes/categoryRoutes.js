@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const catCon = require('../controllers/categories-controller');
+const catCon = require('../controllers/categoryController');
 const validate = require('../utilities/category-validation');
+
+router.get('/categories', catCon.buildCategoryPage);
+router.get('/category/:id', catCon.buildCategoryDetails);
 
 router.get('/new-category', catCon.buildNewCategory);
 router.post(
