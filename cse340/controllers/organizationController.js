@@ -1,48 +1,59 @@
-// controllers/organizationController.js
+const organizationsModel = require("../models/organizations-model");
+const { validationResult } = require("express-validator");
 
-const orgModel = require("../src/models/organizations");
-
-async function organizationsPage(req, res) {
-  try {
-    const organizations =
-      await orgModel.getAllOrganizations();
-
-    res.render("organizations", {
-      title: "Organizations",
-      organizations,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).render("500");
-  }
+async function buildNewOrganization(req, res) {
+  res.render("organizations/new-organization", {
+    title: "Add Organization",
+    errors: null,
+    name: "", description: "", website: "",
+  });
 }
 
-async function organizationDetailsPage(req, res) {
-  try {
-    const organizationId = req.params.id;
-
-    const organization =
-      await orgModel.getOrganizationById(organizationId);
-
-    const projects =
-      await orgModel.getProjectsByOrganization(organizationId);
-
-    if (!organization) {
-      return res.status(404).render("404");
-    }
-
-    res.render("organization-details", {
-      title: organization.name,
-      organization,
-      projects,
+async function createOrganization(req, res) {
+  const { name, description, website } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.render("organizations/new-organization", {
+      title: "Add Organization",
+      errors, name, description, website,
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).render("500");
   }
+  await organizationsModel.addOrganization(name, description, website);
+  req.flash("notice", "Organization added successfully.");
+  res.redirect("/organizations");
+}
+
+async function buildEditOrganization(req, res) {
+  const id = req.params.id;
+  const org = await organizationsModel.getOrganizationById(id);
+  res.render("organizations/edit-organization", {
+    title: "Edit Organization",
+    errors: null,
+    organization_id: org.organization_id,
+    name: org.name,
+    description: org.description,
+    website: org.website,
+  });
+}
+
+async function updateOrganization(req, res) {
+  const { organization_id, name, description, website } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.render("organizations/edit-organization", {
+      title: "Edit Organization",
+      errors, organization_id, name, description, website,
+    });
+  }
+  await organizationsModel.updateOrganization(organization_id, name, description, website);
+  req.flash("notice", "Organization updated successfully.");
+  res.redirect("/organizations/" + organization_id);
 }
 
 module.exports = {
-  organizationsPage,
-  organizationDetailsPage,
+  // ...your existing exports,
+  buildNewOrganization,
+  createOrganization,
+  buildEditOrganization,
+  updateOrganization,
 };
