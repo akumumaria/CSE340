@@ -21,6 +21,17 @@
     </select>
   </label>
 
+  <label>Categories
+    <select name="category_ids" multiple size="4">
+      <% categories.forEach(c => { %>
+        <option value="<%= c.category_id %>"
+          <%= (category_ids || []).includes(String(c.category_id)) ? "selected" : "" %>>
+          <%= c.name %>
+        </option>
+      <% }) %>
+    </select>
+  </label>
+
   <label>Title
     <input type="text" name="project_title" maxlength="150" required value="<%= project_title %>">
   </label>

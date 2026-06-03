@@ -9,9 +9,9 @@ DROP TABLE IF EXISTS organizations;
 CREATE TABLE organizations (
     organization_id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
-    contact_email TEXT NOT NULL,
+    website TEXT,
     description TEXT,
-    logo_file TEXT
+    logo_file TEXT NOT NULL DEFAULT 'images/community.jpg'
 );
 -- =========================
 -- PROJECTS TABLE
@@ -42,16 +42,16 @@ CREATE TABLE project_categories (
 -- =========================
 -- ORGANIZATIONS DATA
 -- =========================
-INSERT INTO organizations (name, contact_email, description, logo_file)
+INSERT INTO organizations (name, website, description, logo_file)
 VALUES (
         'Red Cross',
-        'info@redcross.org',
+        'https://www.redcross.org',
         'Humanitarian organization',
         'images/redcross.webp'
     ),
     (
         'UNICEF',
-        'info@unicef.org',
+        'https://www.unicef.org',
         'Child support organization',
         'images/unicef.webp'
     );

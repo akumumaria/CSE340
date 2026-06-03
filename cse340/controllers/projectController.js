@@ -1,6 +1,13 @@
 const projectModel = require('../models/projectModel');
 const orgModel = require('../models/organizationModel');
+const categoryModel = require('../models/categoryModel');
 const { validationResult } = require('express-validator');
+
+function normalizeCategoryIds(value) {
+  if (!value) return [];
+  if (Array.isArray(value)) return value.map(String);
+  return [String(value)];
+}
 
 async function projectsList(req, res) {
   try {
@@ -48,11 +55,14 @@ function formatDateForInput(dateValue) {
 async function buildNewProject(req, res) {
   try {
     const organizations = await orgModel.getAllOrganizations();
+    const categories = await categoryModel.getAllCategories();
     res.render('new-project', {
       title: 'New Project',
       errors: null,
       organizations,
+      categories,
       organization_id: '',
+      category_ids: [],
       project_title: '',
       description: '',
       location: '',
@@ -66,14 +76,18 @@ async function buildNewProject(req, res) {
 
 async function createProject(req, res) {
   const errors = validationResult(req);
-  const { organization_id, project_title, description, location, project_date } = req.body;
+  const { organization_id, project_title, description, location, project_date, category_ids } = req.body;
   const organizations = await orgModel.getAllOrganizations();
+  const categories = await categoryModel.getAllCategories();
+  const selectedCategoryIds = normalizeCategoryIds(category_ids);
   if (!errors.isEmpty()) {
     return res.render('new-project', {
       title: 'New Project',
       errors,
       organizations,
+      categories,
       organization_id,
+      category_ids: selectedCategoryIds,
       project_title,
       description,
       location,
@@ -87,7 +101,8 @@ async function createProject(req, res) {
       project_title.trim(),
       description.trim(),
       location.trim(),
-      project_date
+      project_date,
+      selectedCategoryIds
     );
     res.redirect('/projects');
   } catch (error) {
@@ -102,13 +117,18 @@ async function buildEditProject(req, res) {
     const project = await projectModel.getProjectById(id);
     if (!project) return res.status(404).render('404');
     const organizations = await orgModel.getAllOrganizations();
+    const categories = await categoryModel.getAllCategories();
+    const assignedCategories = await projectModel.getCategoriesByProjectId(id);
+    const category_ids = assignedCategories.map((category) => String(category.category_id));
 
     res.render('edit-project', {
       title: 'Edit Project',
       errors: null,
       organizations,
+      categories,
       project_id: project.project_id,
       organization_id: project.organization_id,
+      category_ids,
       project_title: project.project_title,
       description: project.description,
       location: project.location,
@@ -122,15 +142,19 @@ async function buildEditProject(req, res) {
 
 async function updateProject(req, res) {
   const errors = validationResult(req);
-  const { project_id, organization_id, project_title, description, location, project_date } = req.body;
+  const { project_id, organization_id, project_title, description, location, project_date, category_ids } = req.body;
   const organizations = await orgModel.getAllOrganizations();
+  const categories = await categoryModel.getAllCategories();
+  const selectedCategoryIds = normalizeCategoryIds(category_ids);
   if (!errors.isEmpty()) {
     return res.render('edit-project', {
       title: 'Edit Project',
       errors,
       organizations,
+      categories,
       project_id,
       organization_id,
+      category_ids: selectedCategoryIds,
       project_title,
       description,
       location,
@@ -145,7 +169,8 @@ async function updateProject(req, res) {
       project_title.trim(),
       description.trim(),
       location.trim(),
-      project_date
+      project_date,
+      selectedCategoryIds
     );
     res.redirect('/project/' + project_id);
   } catch (error) {

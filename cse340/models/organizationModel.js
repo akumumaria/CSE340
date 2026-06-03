@@ -31,11 +31,12 @@ async function getProjectsByOrganization(id) {
   return result.rows;
 }
 async function addOrganization(name, description, website) {
+  const logo_file = 'images/community.jpg';
   const result = await pool.query(`
-    INSERT INTO organizations (name, description, website)
-    VALUES ($1, $2, $3)
+    INSERT INTO organizations (name, description, website, logo_file)
+    VALUES ($1, $2, $3, $4)
     RETURNING *
-  `, [name, description, website]);
+  `, [name, description, website || null, logo_file]);
   return result.rows[0];
 }
 
@@ -45,7 +46,7 @@ async function updateOrganization(id, name, description, website) {
     SET name = $1, description = $2, website = $3
     WHERE organization_id = $4
     RETURNING *
-  `, [name, description, website, id]);
+  `, [name, description, website || null, id]);
   return result.rows[0];
 }
 

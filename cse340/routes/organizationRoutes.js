@@ -16,7 +16,7 @@ router.get("/organizations/new-organization", orgController.buildNewOrganization
 router.post(
   "/organizations/new-organization",
   [
-    body('name').trim().notEmpty().withMessage('Name is required.').isLength({ max: 100 }).withMessage('Name must be 100 characters or fewer.'),
+    body('name').trim().notEmpty().withMessage('Name is required.').isLength({ min: 3, max: 100 }).withMessage('Name must be 3-100 characters.'),
     body('description').trim().isLength({ max: 1000 }).withMessage('Description must be 1000 characters or fewer.'),
     body('website').trim().isLength({ max: 255 }).withMessage('Website url must be 255 characters or fewer.'),
   ],
@@ -27,7 +27,7 @@ router.get("/organizations/edit-organization/:id", orgController.buildEditOrgani
 router.post(
   "/organizations/edit-organization/:id",
   [
-    body('name').trim().notEmpty().withMessage('Name is required.').isLength({ max: 100 }).withMessage('Name must be 100 characters or fewer.'),
+    body('name').trim().notEmpty().withMessage('Name is required.').isLength({ min: 3, max: 100 }).withMessage('Name must be 3-100 characters.'),
     body('description').trim().isLength({ max: 1000 }).withMessage('Description must be 1000 characters or fewer.'),
     body('website').trim().isLength({ max: 255 }).withMessage('Website url must be 255 characters or fewer.'),
   ],

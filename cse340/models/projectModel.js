@@ -58,29 +58,72 @@ async function getCategoriesByProjectId(projectId) {
   return result.rows;
 }
 
-async function addProject(organization_id, project_title, description, location, project_date) {
-  const result = await db.query(`
-    INSERT INTO projects (organization_id, title, description, location, project_date)
-    VALUES ($1, $2, $3, $4, $5)
-    RETURNING project_id
-  `, [organization_id, project_title, description, location, project_date]);
+async function setProjectCategories(client, projectId, categoryIds) {
+  await client.query(`
+    DELETE FROM project_categories
+    WHERE project_id = $1
+  `, [projectId]);
 
-  return result.rows[0];
+  if (!categoryIds || categoryIds.length === 0) {
+    return;
+  }
+
+  const values = [projectId, ...categoryIds];
+  const placeholders = categoryIds.map((_, index) => `($1, $${index + 2})`).join(', ');
+  await client.query(`
+    INSERT INTO project_categories (project_id, category_id)
+    VALUES ${placeholders}
+  `, values);
 }
 
-async function updateProject(project_id, organization_id, project_title, description, location, project_date) {
-  const result = await db.query(`
-    UPDATE projects
-    SET organization_id = $1,
-        title = $2,
-        description = $3,
-        location = $4,
-        project_date = $5
-    WHERE project_id = $6
-    RETURNING project_id
-  `, [organization_id, project_title, description, location, project_date, project_id]);
+async function addProject(organization_id, project_title, description, location, project_date, categoryIds = []) {
+  const client = await db.connect();
+  try {
+    await client.query('BEGIN');
+    const result = await client.query(`
+      INSERT INTO projects (organization_id, title, description, location, project_date)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING project_id
+    `, [organization_id, project_title, description, location, project_date]);
 
-  return result.rows[0];
+    const projectId = result.rows[0].project_id;
+    await setProjectCategories(client, projectId, categoryIds);
+    await client.query('COMMIT');
+
+    return result.rows[0];
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+async function updateProject(project_id, organization_id, project_title, description, location, project_date, categoryIds = []) {
+  const client = await db.connect();
+  try {
+    await client.query('BEGIN');
+    const result = await client.query(`
+      UPDATE projects
+      SET organization_id = $1,
+          title = $2,
+          description = $3,
+          location = $4,
+          project_date = $5
+      WHERE project_id = $6
+      RETURNING project_id
+    `, [organization_id, project_title, description, location, project_date, project_id]);
+
+    await setProjectCategories(client, project_id, categoryIds);
+    await client.query('COMMIT');
+
+    return result.rows[0];
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
 module.exports = {
