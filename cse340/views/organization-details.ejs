@@ -1,7 +1,7 @@
 <%- include("partials/header") %>
 
 <h1><%= organization.name %></h1>
-
+<img src="/<%= organization.logo_file %>" alt="Organization Logo" width="150">
 <p><%= organization.description %></p>
 
 <% if (organization.website) { %>
