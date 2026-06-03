@@ -70,22 +70,30 @@ async function buildEditOrganization(req, res) {
     const org = await orgModel.getOrganizationById(id);
     if (!org) return res.status(404).render('404');
     res.render('edit-organization', {
-      title: 'Edit Organization',
-      errors: null,
-      organization_id: org.organization_id,
-      name: org.name,
-      description: org.description,
-      website: org.website,
-    });
+  title: 'Edit Organization',
+  errors: null,
+  organization_id: org.organization_id,
+  name: org.name,
+  description: org.description,
+  website: org.website,
+  logo_file: org.logo_file   // ADD THIS
+});
   } catch (error) {
     console.error(error);
     res.status(500).render('500');
   }
 }
-
 async function updateOrganization(req, res) {
   const errors = validationResult(req);
-  const { organization_id, name, description, website } = req.body;
+
+  const {
+    organization_id,
+    name,
+    description,
+    website,
+    logo_file   // 👈 PUT IT HERE
+  } = req.body;
+
   if (!errors.isEmpty()) {
     return res.render('edit-organization', {
       title: 'Edit Organization',
@@ -94,18 +102,26 @@ async function updateOrganization(req, res) {
       name,
       description,
       website,
+      logo_file
     });
   }
 
   try {
-    await orgModel.updateOrganization(organization_id, name.trim(), description.trim(), website.trim());
+    await orgModel.updateOrganization(
+      organization_id,
+      name.trim(),
+      description.trim(),
+      website.trim(),
+      logo_file   // 👈 PASS IT HERE
+    );
+
     res.redirect('/organization/' + organization_id);
+
   } catch (error) {
     console.error(error);
     res.status(500).render('500');
   }
 }
-
 module.exports = {
   organizationsPage,
   organizationDetailsPage,

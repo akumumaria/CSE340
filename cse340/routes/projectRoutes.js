@@ -7,6 +7,7 @@ const { body } = require('express-validator');
 const projectController = require("../controllers/projectController");
 
 router.get("/projects", projectController.projectsList);
+router.get('/projects/:id/categories', projectController.assignCategoriesPage);
 router.get("/project/:id", projectController.projectDetailsPage);
 
 router.get("/projects/new-project", projectController.buildNewProject);

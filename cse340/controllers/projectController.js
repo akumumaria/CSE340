@@ -178,7 +178,23 @@ async function updateProject(req, res) {
     res.status(500).render('500');
   }
 }
+async function assignCategoriesPage(req, res) {
+  try {
+    const id = req.params.id;
 
+    const project = await projectModel.getProjectById(id);
+    const categories = await projectModel.getAllCategories();
+
+    res.render('assign-categories', {
+      project,
+      categories
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).render('500');
+  }
+}
 module.exports = {
   projectsList,
   projectDetailsPage,
@@ -186,4 +202,5 @@ module.exports = {
   createProject,
   buildEditProject,
   updateProject,
+  assignCategoriesPage,
 };

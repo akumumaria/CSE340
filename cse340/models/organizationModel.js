@@ -40,13 +40,17 @@ async function addOrganization(name, description, website) {
   return result.rows[0];
 }
 
-async function updateOrganization(id, name, description, website) {
+async function updateOrganization(id, name, description, website, logo_file) {
   const result = await pool.query(`
     UPDATE organizations
-    SET name = $1, description = $2, website = $3
-    WHERE organization_id = $4
+    SET name = $1,
+        description = $2,
+        website = $3,
+        logo_file = $4
+    WHERE organization_id = $5
     RETURNING *
-  `, [name, description, website || null, id]);
+  `, [name, description, website || null, logo_file, id]);
+
   return result.rows[0];
 }
 
