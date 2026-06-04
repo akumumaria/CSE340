@@ -4,21 +4,28 @@
     <%= organization.name %>
   </h1>
 
-  <% if (organization.logo_file) { %>
-    <img src="/<%= organization.logo_file %>" alt="<%= organization.name %> logo"
-      style="width: 100px; height: 100px; margin-bottom: 20px;">
-    <% } %>
+  <img src="/<%= organization.logo_file || 'images/community.jpg' %>" alt="<%= organization.name %> logo"
+    style="width: 100px; height: 100px; margin-bottom: 20px;">
 
-      <p>
-        <%= organization.description %>
-      </p>
+  <p>
+    <%= organization.description %>
+  </p>
 
-      <p>
-        <strong>Contact:</strong>
-        <a href="mailto:<%= organization.contact_email %>">
-          <%= organization.contact_email %>
-        </a>
-      </p>
+  <p>
+    <strong>Contact:</strong>
+    <a href="mailto:<%= organization.contact_email %>">
+      <%= organization.contact_email %>
+    </a>
+  </p>
+
+  <% if (organization.website) { %>
+  <p>
+    <strong>Website:</strong>
+    <a href="<%= organization.website %>" target="_blank">
+      <%= organization.website %>
+    </a>
+  </p>
+  <% } %>
 
       <h2>Projects</h2>
 

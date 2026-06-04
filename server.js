@@ -2,8 +2,6 @@ const express = require("express");
 const path = require("path");
 require("dotenv").config();
 
-console.log("DATABASE_URL loaded:", process.env.DATABASE_URL ? "YES" : "NO");
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -45,19 +43,10 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const organizationRoutes = require("./routes/organizationRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 
-console.log('[SERVER] Routes loaded successfully');
-
 app.use("/", mainRoutes);
-console.log('[SERVER] Main routes mounted');
-
 app.use("/", categoryRoutes);
-console.log('[SERVER] Category routes mounted');
-
 app.use("/", organizationRoutes);
-console.log('[SERVER] Organization routes mounted');
-
 app.use("/", projectRoutes);
-console.log('[SERVER] Project routes mounted');
 
 /* =========================
    404 ERROR HANDLER

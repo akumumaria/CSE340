@@ -8,6 +8,7 @@ const projectController = require("../controllers/projectController");
 
 router.get("/projects", projectController.projectsList);
 router.get('/projects/:id/categories', projectController.assignCategoriesPage);
+router.post('/projects/:id/categories', projectController.updateProjectCategories);
 router.get("/project/:id", projectController.projectDetailsPage);
 
 router.get("/projects/new-project", projectController.buildNewProject);

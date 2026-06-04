@@ -4,12 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-<<<<<<< HEAD
     "dev": "node server.js",
     "start": "node server.js",
-=======
-    "start": "node cse340/server.js",
->>>>>>> fa7a8303aea04392d7b4ac737101eb903661b1ee
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

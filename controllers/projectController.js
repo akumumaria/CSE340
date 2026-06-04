@@ -1,6 +1,6 @@
-const projectModel = require('../models/projectModel');
-const orgModel = require('../models/organizationModel');
-const categoryModel = require('../models/categoryModel');
+const projectModel = require('../src/models/projects');
+const orgModel = require('../src/models/organizations');
+const categoryModel = require('../src/models/categories');
 const { validationResult } = require('express-validator');
 
 function normalizeCategoryIds(value) {
@@ -11,9 +11,7 @@ function normalizeCategoryIds(value) {
 
 async function projectsList(req, res) {
   try {
-    console.log('[projectsList] Fetching projects...');
     const projects = await projectModel.getUpcomingProjects();
-    console.log('[projectsList] Rendering projects view');
     res.render('projects', {
       title: 'Projects',
       projects,
@@ -33,8 +31,8 @@ async function projectDetailsPage(req, res) {
     const organization = await projectModel.getOrganizationByProjectId(id);
     const categories = await projectModel.getCategoriesByProjectId(id);
 
-    res.render('projects-details', {
-      title: project.project_title || 'Project Details',
+    res.render('project-details', {
+      title: project.title || 'Project Details',
       project,
       organization,
       categories,
@@ -129,7 +127,7 @@ async function buildEditProject(req, res) {
       project_id: project.project_id,
       organization_id: project.organization_id,
       category_ids,
-      project_title: project.project_title,
+      project_title: project.title,
       description: project.description,
       location: project.location,
       project_date: formatDateForInput(project.project_date),
@@ -183,13 +181,41 @@ async function assignCategoriesPage(req, res) {
     const id = req.params.id;
 
     const project = await projectModel.getProjectById(id);
-    const categories = await projectModel.getAllCategories();
+    const categories = await categoryModel.getAllCategories();
+    const assignedCategories = await projectModel.getCategoriesByProjectId(id);
 
     res.render('assign-categories', {
+      title: 'Assign Categories',
       project,
-      categories
+      categories,
+      assignedCategories
     });
 
+  } catch (error) {
+    console.error(error);
+    res.status(500).render('500');
+  }
+}
+
+async function updateProjectCategories(req, res) {
+  try {
+    const id = req.params.id;
+    const categoryIds = req.body.category_ids || [];
+    
+    const db = require('../src/database');
+    const client = await db.connect();
+    try {
+      await client.query('BEGIN');
+      await projectModel.setProjectCategories(client, id, categoryIds);
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+    
+    res.redirect('/project/' + id);
   } catch (error) {
     console.error(error);
     res.status(500).render('500');
@@ -203,4 +229,5 @@ module.exports = {
   buildEditProject,
   updateProject,
   assignCategoriesPage,
+  updateProjectCategories,
 };

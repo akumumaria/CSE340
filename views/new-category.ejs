@@ -2,7 +2,11 @@
 
 <h1>New Category</h1>
 
-<%- include("partials/flash") %>  <!-- if you have flash messages -->
+<% if (errors) { %>
+  <ul class="errors">
+    <% errors.array().forEach(e => { %><li><%= e.msg %></li><% }) %>
+  </ul>
+<% } %>
 
 <form action="/new-category" method="POST">
   <label for="category_name">Category Name:</label><br>

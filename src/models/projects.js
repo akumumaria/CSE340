@@ -4,7 +4,7 @@ async function getUpcomingProjects() {
   const result = await db.query(`
     SELECT p.project_id,
            p.organization_id,
-           p.title AS project_title,
+           p.title,
            p.description,
            p.location,
            p.project_date,
@@ -23,7 +23,7 @@ async function getProjectById(id) {
   const result = await db.query(`
     SELECT project_id,
            organization_id,
-           title AS project_title,
+           title,
            description,
            location,
            project_date
@@ -131,6 +131,7 @@ module.exports = {
   getProjectById,
   getOrganizationByProjectId,
   getCategoriesByProjectId,
+  setProjectCategories,
   addProject,
   updateProject,
 };

@@ -1,11 +1,9 @@
-const orgModel = require('../models/organizationModel');
+const orgModel = require('../src/models/organizations');
 const { validationResult } = require('express-validator');
 
 async function organizationsPage(req, res) {
   try {
-    console.log('[organizationsPage] Fetching organizations...');
     const organizations = await orgModel.getAllOrganizations();
-    console.log('[organizationsPage] Rendering organizations view');
     res.render('organizations', { title: 'Organizations', organizations });
   } catch (error) {
     console.error('[ERROR organizationsPage]', error.message, error.stack);
@@ -16,11 +14,9 @@ async function organizationsPage(req, res) {
 async function organizationDetailsPage(req, res) {
   try {
     const id = req.params.id;
-    console.log('[organizationDetailsPage] Fetching org', id);
     const organization = await orgModel.getOrganizationById(id);
     const projects = await orgModel.getProjectsByOrganization(id);
     if (!organization) return res.status(404).render('404');
-    console.log('[organizationDetailsPage] Rendering details');
     res.render('organization-details', {
       title: organization.name,
       organization,
@@ -37,6 +33,7 @@ async function buildNewOrganization(req, res) {
     title: 'New Organization',
     errors: null,
     name: '',
+    contact_email: '',
     description: '',
     website: '',
   });
@@ -44,19 +41,20 @@ async function buildNewOrganization(req, res) {
 
 async function createOrganization(req, res) {
   const errors = validationResult(req);
-  const { name, description, website } = req.body;
+  const { name, contact_email, description, website } = req.body;
   if (!errors.isEmpty()) {
     return res.render('new-organization', {
       title: 'New Organization',
       errors,
       name,
+      contact_email,
       description,
       website,
     });
   }
 
   try {
-    await orgModel.addOrganization(name.trim(), description.trim(), website.trim());
+    await orgModel.addOrganization(name.trim(), contact_email.trim(), description.trim(), website.trim());
     res.redirect('/organizations');
   } catch (error) {
     console.error(error);
@@ -70,14 +68,15 @@ async function buildEditOrganization(req, res) {
     const org = await orgModel.getOrganizationById(id);
     if (!org) return res.status(404).render('404');
     res.render('edit-organization', {
-  title: 'Edit Organization',
-  errors: null,
-  organization_id: org.organization_id,
-  name: org.name,
-  description: org.description,
-  website: org.website,
-  logo_file: org.logo_file   // ADD THIS
-});
+      title: 'Edit Organization',
+      errors: null,
+      organization_id: org.organization_id,
+      name: org.name,
+      contact_email: org.contact_email,
+      description: org.description,
+      website: org.website,
+      logo_file: org.logo_file
+    });
   } catch (error) {
     console.error(error);
     res.status(500).render('500');
@@ -89,9 +88,10 @@ async function updateOrganization(req, res) {
   const {
     organization_id,
     name,
+    contact_email,
     description,
     website,
-    logo_file   // 👈 PUT IT HERE
+    logo_file
   } = req.body;
 
   if (!errors.isEmpty()) {
@@ -100,6 +100,7 @@ async function updateOrganization(req, res) {
       errors,
       organization_id,
       name,
+      contact_email,
       description,
       website,
       logo_file
@@ -110,9 +111,10 @@ async function updateOrganization(req, res) {
     await orgModel.updateOrganization(
       organization_id,
       name.trim(),
+      contact_email.trim(),
       description.trim(),
       website.trim(),
-      logo_file   // 👈 PASS IT HERE
+      logo_file
     );
 
     res.redirect('/organization/' + organization_id);
