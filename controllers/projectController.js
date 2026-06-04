@@ -200,7 +200,7 @@ async function assignCategoriesPage(req, res) {
 async function updateProjectCategories(req, res) {
   try {
     const id = req.params.id;
-    const categoryIds = req.body.category_ids || [];
+    const categoryIds = normalizeCategoryIds(req.body.category_ids);
     
     const db = require('../src/database');
     const client = await db.connect();
