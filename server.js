@@ -8,6 +8,18 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 /* =========================
+   ERROR HANDLERS (top-level)
+========================= */
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('[UNHANDLED REJECTION]', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('[UNCAUGHT EXCEPTION]', error);
+  process.exit(1);
+});
+
+/* =========================
    VIEW ENGINE SETUP
 ========================= */
 app.set("view engine", "ejs");
@@ -20,25 +32,32 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log(`[REQUEST] ${req.method} ${req.path}`);
+  next();
+});
+
 /* =========================
    ROUTES
 ========================= */
+const mainRoutes = require("./routes/route");
 const categoryRoutes = require("./routes/categoryRoutes");
 const organizationRoutes = require("./routes/organizationRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 
-app.use("/", categoryRoutes);
-app.use("/", organizationRoutes);
-app.use("/", projectRoutes);
+console.log('[SERVER] Routes loaded successfully');
 
-/* =========================
-   HOME ROUTE
-========================= */
-app.get("/", (req, res) => {
-  res.render("home", {
-    title: "Home"
-  });
-});
+app.use("/", mainRoutes);
+console.log('[SERVER] Main routes mounted');
+
+app.use("/", categoryRoutes);
+console.log('[SERVER] Category routes mounted');
+
+app.use("/", organizationRoutes);
+console.log('[SERVER] Organization routes mounted');
+
+app.use("/", projectRoutes);
+console.log('[SERVER] Project routes mounted');
 
 /* =========================
    404 ERROR HANDLER

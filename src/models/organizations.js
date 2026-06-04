@@ -30,9 +30,34 @@ async function getProjectsByOrganization(id) {
 
   return result.rows;
 }
+async function addOrganization(name, description, website) {
+  const logo_file = 'images/community.jpg';
+  const result = await pool.query(`
+    INSERT INTO organizations (name, description, website, logo_file)
+    VALUES ($1, $2, $3, $4)
+    RETURNING *
+  `, [name, description, website || null, logo_file]);
+  return result.rows[0];
+}
+
+async function updateOrganization(id, name, description, website, logo_file) {
+  const result = await pool.query(`
+    UPDATE organizations
+    SET name = $1,
+        description = $2,
+        website = $3,
+        logo_file = $4
+    WHERE organization_id = $5
+    RETURNING *
+  `, [name, description, website || null, logo_file, id]);
+
+  return result.rows[0];
+}
 
 module.exports = {
   getAllOrganizations,
   getOrganizationById,
   getProjectsByOrganization,
+  addOrganization,
+  updateOrganization,
 };

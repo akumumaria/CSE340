@@ -1,0 +1,22 @@
+<%- include("partials/header") %>
+
+<h1>Edit Category</h1>
+
+<%- include("partials/flash") %>
+
+<form action="/edit-category/<%= category.category_id %>" method="POST">
+  <label for="category_name">Category Name:</label><br>
+  <input 
+    type="text" 
+    id="category_name" 
+    name="category_name" 
+    value="<%= category.name %>"
+    required 
+    maxlength="100"
+  ><br><br>
+  
+  <button type="submit">Update Category</button>
+  <a href="/categories">Cancel</a>
+</form>
+
+<%- include("partials/footer") %>
