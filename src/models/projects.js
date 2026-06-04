@@ -64,7 +64,7 @@ async function setProjectCategories(client, projectId, categoryIds) {
     WHERE project_id = $1
   `, [projectId]);
 
-  if (!categoryIds || categoryIds.length === 0) {
+  if (!categoryIds || !Array.isArray(categoryIds) || categoryIds.length === 0) {
     return;
   }
 
