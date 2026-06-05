@@ -7,32 +7,27 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-/* =========================
-   ERROR HANDLERS (top-level)
-========================= */
+// Handle unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
   console.error('[UNHANDLED REJECTION]', reason);
 });
 
+// Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
   console.error('[UNCAUGHT EXCEPTION]', error);
   process.exit(1);
 });
 
-/* =========================
-   VIEW ENGINE SETUP
-========================= */
+// Set up EJS as the view engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-/* =========================
-   MIDDLEWARE
-========================= */
+// Middleware setup
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Session middleware (required by connect-flash)
+// Session configuration for user sessions
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
   resave: false,
@@ -43,10 +38,10 @@ app.use(session({
   }
 }));
 
-// Flash message middleware
+// Flash messages for success/error notifications
 app.use(flash());
 
-// Make flash messages available to all views
+// Make flash messages available in all views
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success');
   res.locals.error_messages = req.flash('error');
@@ -65,37 +60,31 @@ app.use((req, res, next) => {
   res.locals.NODE_ENV = process.env.NODE_ENV;
   next();
 });
-
 app.use((req, res, next) => {
   console.log(`[REQUEST] ${req.method} ${req.path}`);
   next();
 });
 
-/* =========================
-   ROUTES
-========================= */
+// Import route files
 const mainRoutes = require("./routes/route");
 const categoryRoutes = require("./routes/categoryRoutes");
 const organizationRoutes = require("./routes/organizationRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 
+// Use the routes
 app.use("/", mainRoutes);
 app.use("/", categoryRoutes);
 app.use("/", organizationRoutes);
 app.use("/", projectRoutes);
 
-/* =========================
-   404 ERROR HANDLER
-========================= */
+// 404 error handler
 app.use((req, res) => {
   res.status(404).render("404", {
     title: "Page Not Found"
   });
 });
 
-/* =========================
-   500 ERROR HANDLER
-========================= */
+// 500 error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).render("500", {
@@ -103,9 +92,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-/* =========================
-   START SERVER
-========================= */
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

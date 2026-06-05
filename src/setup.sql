@@ -1,10 +1,8 @@
--- =====================================================
--- DATABASE SETUP SCRIPT FOR cse340
--- =====================================================
+-- Database setup script for CSE340 project
 
 DROP TABLE IF EXISTS project_categories CASCADE;
 
--- Drop dependent tables
+-- Drop dependent tables first
 DROP TABLE IF EXISTS projects CASCADE;
 DROP TABLE IF EXISTS categories CASCADE;
 
@@ -22,11 +20,7 @@ ALTER SEQUENCE IF EXISTS categories_category_id_seq RESTART WITH 1;
 ALTER SEQUENCE IF EXISTS roles_role_id_seq RESTART WITH 1;
 ALTER SEQUENCE IF EXISTS users_user_id_seq RESTART WITH 1;
 
--- =====================================================
--- STEP 2: CREATE TABLES
--- =====================================================
-
--- ORGANIZATIONS TABLE (Parent)
+-- Create tables
 CREATE TABLE organizations (
     organization_id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
@@ -35,7 +29,6 @@ CREATE TABLE organizations (
     website TEXT
 );
 
--- PROJECTS TABLE (Child of organizations)
 CREATE TABLE projects (
     project_id SERIAL PRIMARY KEY,
     organization_id INTEGER NOT NULL REFERENCES organizations(organization_id) ON DELETE CASCADE,
@@ -45,13 +38,12 @@ CREATE TABLE projects (
     project_date DATE NOT NULL
 );
 
--- CATEGORIES TABLE (Independent)
 CREATE TABLE categories (
     category_id SERIAL PRIMARY KEY,
     name TEXT NOT NULL UNIQUE
 );
 
--- PROJECT_CATEGORIES TABLE (Junction table for many-to-many relationship)
+-- Junction table for many-to-many relationship between projects and categories
 CREATE TABLE project_categories (
     project_id INTEGER NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE,
     category_id INTEGER NOT NULL REFERENCES categories(category_id) ON DELETE CASCADE,
@@ -79,7 +71,7 @@ CREATE TABLE users (
 -- STEP 3: INSERT ORGANIZATIONS DATA
 -- =====================================================
 INSERT INTO organizations (name, contact_email, description, website)
-VALUES 
+VALUES
     (
         'Red Cross',
         'info@redcross.org',
@@ -93,9 +85,7 @@ VALUES
         'https://www.unicef.org'
     );
 
--- =====================================================
--- STEP 4: INSERT PROJECTS DATA
--- =====================================================
+-- Insert projects data
 INSERT INTO projects (
     organization_id,
     title,
@@ -103,7 +93,7 @@ INSERT INTO projects (
     location,
     project_date
 )
-VALUES 
+VALUES
     -- Red Cross Projects (organization_id = 1)
     (
         1,
@@ -188,7 +178,7 @@ INSERT INTO roles (role_name, role_description) VALUES
 -- STEP 6: INSERT CATEGORIES DATA
 -- =====================================================
 INSERT INTO categories (name)
-VALUES 
+VALUES
     ('Health'),
     ('Education'),
     ('Environment'),
@@ -199,7 +189,7 @@ VALUES
 -- STEP 7: LINK PROJECTS TO CATEGORIES
 -- =====================================================
 INSERT INTO project_categories (project_id, category_id)
-VALUES 
+VALUES
     -- Red Cross Projects
     (1, 1),  -- Clean Water Project -> Health
     (1, 3),  -- Clean Water Project -> Environment
@@ -207,7 +197,7 @@ VALUES
     (3, 3),  -- Food Distribution -> Environment
     (4, 4),  -- Emergency Shelter -> Emergency Relief
     (5, 1),  -- Health Education -> Health
-    
+
     -- UNICEF Projects
     (6, 2),  -- School Support -> Education
     (7, 2),  -- Library Construction -> Education

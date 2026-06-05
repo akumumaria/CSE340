@@ -1,4 +1,4 @@
-// routes/projectRoutes.js
+// Project routes
 
 const express = require("express");
 const router = express.Router();
@@ -7,11 +7,18 @@ const { body } = require('express-validator');
 const projectController = require("../controllers/projectController");
 const { requireRole } = require("../controllers/usersController.js");
 
+// View all projects
 router.get("/projects", projectController.projectsList);
+// Show page to assign categories to a project
 router.get('/projects/:id/categories', requireRole('admin'), projectController.assignCategoriesPage);
+
+// Handle category assignment for a project
 router.post('/projects/:id/categories', requireRole('admin'), projectController.updateProjectCategories);
+
+// View single project details
 router.get("/project/:id", projectController.projectDetailsPage);
 
+// Show form to create new project
 router.get("/projects/new-project", requireRole('admin'), projectController.buildNewProject);
 router.post(
   "/projects/new-project",
@@ -26,6 +33,7 @@ router.post(
   projectController.createProject
 );
 
+// Show form to edit project
 router.get("/projects/edit-project/:id", requireRole('admin'), projectController.buildEditProject);
 router.post(
   "/projects/edit-project/:id",
