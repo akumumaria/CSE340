@@ -1,4 +1,4 @@
-// routes/organizationRoutes.js
+// Organization routes
 
 const express = require("express");
 const router = express.Router();
@@ -6,10 +6,16 @@ const { body } = require('express-validator');
 
 const orgController = require("../controllers/organizationController");
 
+// View all organizations
 router.get("/organizations", orgController.organizationsPage);
+
+// View single organization details
 router.get("/organization/:id", orgController.organizationDetailsPage);
 
+// Show form to create new organization
 router.get("/organizations/new-organization", orgController.buildNewOrganization);
+
+// Handle new organization form submission with validation
 router.post(
   "/organizations/new-organization",
   [
@@ -21,7 +27,10 @@ router.post(
   orgController.createOrganization
 );
 
+// Show form to edit organization
 router.get("/organizations/edit-organization/:id", orgController.buildEditOrganization);
+
+// Handle organization edit form submission with validation
 router.post(
   "/organizations/edit-organization/:id",
   [

@@ -1,4 +1,4 @@
-// routes/projectRoutes.js
+// Project routes
 
 const express = require("express");
 const router = express.Router();
@@ -6,12 +6,22 @@ const { body } = require('express-validator');
 
 const projectController = require("../controllers/projectController");
 
+// View all projects
 router.get("/projects", projectController.projectsList);
+
+// Show page to assign categories to a project
 router.get('/projects/:id/categories', projectController.assignCategoriesPage);
+
+// Handle category assignment for a project
 router.post('/projects/:id/categories', projectController.updateProjectCategories);
+
+// View single project details
 router.get("/project/:id", projectController.projectDetailsPage);
 
+// Show form to create new project
 router.get("/projects/new-project", projectController.buildNewProject);
+
+// Handle new project form submission with validation
 router.post(
   "/projects/new-project",
   [
@@ -24,7 +34,10 @@ router.post(
   projectController.createProject
 );
 
+// Show form to edit project
 router.get("/projects/edit-project/:id", projectController.buildEditProject);
+
+// Handle project edit form submission with validation
 router.post(
   "/projects/edit-project/:id",
   [
