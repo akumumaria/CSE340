@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 const catCon = require('../controllers/categoryController');
 const validate = require('../utilities/category-validation');
+const { requireRole } = require("../controllers/usersController.js");
 
 // View all categories
 router.get('/categories', catCon.buildCategoryPage);
@@ -12,22 +13,20 @@ router.get('/categories', catCon.buildCategoryPage);
 router.get('/category/:id', catCon.buildCategoryDetails);
 
 // Show form to create new category
-router.get('/new-category', catCon.buildNewCategory);
-
-// Handle new category form submission with validation
+router.get('/new-category', requireRole('admin'), catCon.buildNewCategory);
 router.post(
   '/new-category',
+  requireRole('admin'),
   validate.categoryRules(),
   validate.checkCategoryData,
   catCon.createCategory
 );
 
 // Show form to edit category
-router.get('/edit-category/:id', catCon.buildEditCategory);
-
-// Handle category edit form submission with validation
+router.get('/edit-category/:id', requireRole('admin'), catCon.buildEditCategory);
 router.post(
   '/edit-category/:id',
+  requireRole('admin'),
   validate.categoryRules(),
   validate.checkUpdateCategoryData,
   catCon.updateCategory

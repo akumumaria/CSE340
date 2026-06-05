@@ -2,7 +2,9 @@
 
   <h1>Projects</h1>
 
-  <p><a href="/projects/new-project">Add New Project</a></p>
+  <% if (user && user.role_name === 'admin') { %>
+    <p><a href="/projects/new-project">Add New Project</a></p>
+  <% } %>
 
   <ul>
     <% projects.forEach(project=> { %>

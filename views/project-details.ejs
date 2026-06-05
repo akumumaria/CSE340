@@ -38,12 +38,14 @@
       <% }) %>
   </div>
 
-  <p>
-    <a href="/projects/<%= project.project_id %>/categories">Assign Categories</a>
-  </p>
+  <% if (user && user.role_name === 'admin') { %>
+    <p>
+      <a href="/projects/<%= project.project_id %>/categories">Assign Categories</a>
+    </p>
 
-  <p>
-    <a href="/projects/edit-project/<%= project.project_id %>">Edit Project</a>
-  </p>
+    <p>
+      <a href="/projects/edit-project/<%= project.project_id %>">Edit Project</a>
+    </p>
+  <% } %>
 
   <%- include("partials/footer") %>

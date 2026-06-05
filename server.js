@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const session = require("express-session");
 const flash = require("connect-flash");
+const flashMiddleware = require("./middlewares/flash");
 require("dotenv").config();
 
 const app = express();
@@ -33,7 +34,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: true,
+    secure: false,  // Set to false for local development, true for production with HTTPS
     maxAge: 24 * 60 * 60 * 1000
   }
 }));
@@ -42,13 +43,20 @@ app.use(session({
 app.use(flash());
 
 // Make flash messages available in all views
+app.use(flashMiddleware);
+
+// Middleware to set res.locals variables for all templates
 app.use((req, res, next) => {
-  res.locals.success_messages = req.flash('success');
-  res.locals.error_messages = req.flash('error');
+  res.locals.isLoggedIn = false;
+  if (req.session && req.session.user) {
+    res.locals.isLoggedIn = true;
+  }
+
+  res.locals.user = req.session.user || null;
+
+  res.locals.NODE_ENV = process.env.NODE_ENV;
   next();
 });
-
-// Log incoming requests for debugging
 app.use((req, res, next) => {
   console.log(`[REQUEST] ${req.method} ${req.path}`);
   next();

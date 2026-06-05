@@ -5,6 +5,7 @@ const router = express.Router();
 const { body } = require('express-validator');
 
 const orgController = require("../controllers/organizationController");
+const { requireRole } = require("../controllers/usersController.js");
 
 // View all organizations
 router.get("/organizations", orgController.organizationsPage);
@@ -13,11 +14,10 @@ router.get("/organizations", orgController.organizationsPage);
 router.get("/organization/:id", orgController.organizationDetailsPage);
 
 // Show form to create new organization
-router.get("/organizations/new-organization", orgController.buildNewOrganization);
-
-// Handle new organization form submission with validation
+router.get("/organizations/new-organization", requireRole('admin'), orgController.buildNewOrganization);
 router.post(
   "/organizations/new-organization",
+  requireRole('admin'),
   [
     body('name').trim().notEmpty().withMessage('Name is required.').isLength({ min: 3, max: 100 }).withMessage('Name must be 3-100 characters.'),
     body('contact_email').trim().notEmpty().withMessage('Contact email is required.').isEmail().withMessage('Contact email must be a valid email.').isLength({ max: 255 }).withMessage('Contact email must be 255 characters or fewer.'),
@@ -28,11 +28,10 @@ router.post(
 );
 
 // Show form to edit organization
-router.get("/organizations/edit-organization/:id", orgController.buildEditOrganization);
-
-// Handle organization edit form submission with validation
+router.get("/organizations/edit-organization/:id", requireRole('admin'), orgController.buildEditOrganization);
 router.post(
   "/organizations/edit-organization/:id",
+  requireRole('admin'),
   [
     body('name').trim().notEmpty().withMessage('Name is required.').isLength({ min: 3, max: 100 }).withMessage('Name must be 3-100 characters.'),
     body('contact_email').trim().notEmpty().withMessage('Contact email is required.').isEmail().withMessage('Contact email must be a valid email.').isLength({ max: 255 }).withMessage('Contact email must be 255 characters or fewer.'),

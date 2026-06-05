@@ -2,7 +2,9 @@
 
   <h1>Organizations</h1>
 
-  <p><a href="/organizations/new-organization">Add New Organization</a></p>
+  <% if (user && user.role_name === 'admin') { %>
+    <p><a href="/organizations/new-organization">Add New Organization</a></p>
+  <% } %>
 
   <ul>
     <% organizations.forEach(org=> { %>
