@@ -12,7 +12,7 @@
     <input type="hidden" name="project_id" value="<%= project_id %>">
   <label>Organization
     <select name="organization_id" required>
-      <option value="">-- Select --</option>
+      <option value="">-- Select an organization --</option>
       <% organizations.forEach(o => { %>
         <option value="<%= o.organization_id %>"
           <%= String(organization_id) === String(o.organization_id) ? "selected" : "" %>>
@@ -22,30 +22,34 @@
     </select>
   </label>
 
-  <label>Categories
-    <select name="category_ids" multiple size="4">
-      <% categories.forEach(c => { %>
-        <option value="<%= c.category_id %>"
-          <%= (category_ids || []).includes(String(c.category_id)) ? "selected" : "" %>>
-          <%= c.name %>
-        </option>
-      <% }) %>
-    </select>
-  </label>
+  <label>Categories (select all that apply)</label>
+  <div class="checkbox-group">
+    <% categories.forEach(c => { %>
+      <label class="checkbox-label">
+        <input 
+          type="checkbox" 
+          name="category_ids" 
+          value="<%= c.category_id %>"
+          <%= (category_ids || []).includes(String(c.category_id)) ? "checked" : "" %>
+        >
+        <%= c.name %>
+      </label>
+    <% }) %>
+  </div>
 
-  <label>Title
-    <input type="text" name="project_title" maxlength="150" required value="<%= project_title %>">
+  <label>Project Title
+    <input type="text" name="project_title" maxlength="150" required placeholder="e.g., Clean Water Project" value="<%= project_title %>">
   </label>
 
   <label>Description
-    <textarea name="description" maxlength="1000"><%= description %></textarea>
+    <textarea name="description" maxlength="1000" placeholder="Describe the project's goals and activities"><%= description %></textarea>
   </label>
 
   <label>Location
-    <input type="text" name="location" maxlength="200" value="<%= location %>">
+    <input type="text" name="location" maxlength="200" placeholder="e.g., Kampala" value="<%= location %>">
   </label>
 
-  <label>Date
+  <label>Project Date
     <input type="date" name="project_date" required value="<%= project_date %>">
   </label>
 

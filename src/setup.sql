@@ -26,8 +26,7 @@ CREATE TABLE organizations (
     name TEXT NOT NULL,
     contact_email TEXT NOT NULL,
     description TEXT,
-    website TEXT,
-    logo_file TEXT
+    website TEXT
 );
 
 -- PROJECTS TABLE (Child of organizations)
@@ -56,21 +55,19 @@ CREATE TABLE project_categories (
 -- =====================================================
 -- STEP 3: INSERT ORGANIZATIONS DATA
 -- =====================================================
-INSERT INTO organizations (name, contact_email, description, website, logo_file)
+INSERT INTO organizations (name, contact_email, description, website)
 VALUES 
     (
         'Red Cross',
         'info@redcross.org',
         'Humanitarian organization providing emergency assistance and disaster relief',
-        'https://www.redcross.org',
-        'images/redcross.webp'
+        'https://www.redcross.org'
     ),
     (
         'UNICEF',
         'info@unicef.org',
         'Child support organization focused on children''s rights and wellbeing',
-        'https://www.unicef.org',
-        'images/unicef.webp'
+        'https://www.unicef.org'
     );
 
 -- =====================================================

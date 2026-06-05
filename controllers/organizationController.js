@@ -55,9 +55,11 @@ async function createOrganization(req, res) {
 
   try {
     await orgModel.addOrganization(name.trim(), contact_email.trim(), description.trim(), website.trim());
+    req.flash('success', 'Organization created successfully!');
     res.redirect('/organizations');
   } catch (error) {
     console.error(error);
+    req.flash('error', 'Failed to create organization.');
     res.status(500).render('500');
   }
 }
@@ -74,8 +76,7 @@ async function buildEditOrganization(req, res) {
       name: org.name,
       contact_email: org.contact_email,
       description: org.description,
-      website: org.website,
-      logo_file: org.logo_file
+      website: org.website
     });
   } catch (error) {
     console.error(error);
@@ -90,8 +91,7 @@ async function updateOrganization(req, res) {
     name,
     contact_email,
     description,
-    website,
-    logo_file
+    website
   } = req.body;
 
   if (!errors.isEmpty()) {
@@ -102,8 +102,7 @@ async function updateOrganization(req, res) {
       name,
       contact_email,
       description,
-      website,
-      logo_file
+      website
     });
   }
 
@@ -113,14 +112,15 @@ async function updateOrganization(req, res) {
       name.trim(),
       contact_email.trim(),
       description.trim(),
-      website.trim(),
-      logo_file
+      website.trim()
     );
 
+    req.flash('success', 'Organization updated successfully!');
     res.redirect('/organization/' + organization_id);
 
   } catch (error) {
     console.error(error);
+    req.flash('error', 'Failed to update organization.');
     res.status(500).render('500');
   }
 }

@@ -102,9 +102,11 @@ async function createProject(req, res) {
       project_date,
       selectedCategoryIds
     );
+    req.flash('success', 'Project created successfully!');
     res.redirect('/projects');
   } catch (error) {
     console.error(error);
+    req.flash('error', 'Failed to create project.');
     res.status(500).render('500');
   }
 }
@@ -170,9 +172,11 @@ async function updateProject(req, res) {
       project_date,
       selectedCategoryIds
     );
+    req.flash('success', 'Project updated successfully!');
     res.redirect('/project/' + project_id);
   } catch (error) {
     console.error(error);
+    req.flash('error', 'Failed to update project.');
     res.status(500).render('500');
   }
 }

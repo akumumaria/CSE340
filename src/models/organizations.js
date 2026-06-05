@@ -31,26 +31,24 @@ async function getProjectsByOrganization(id) {
   return result.rows;
 }
 async function addOrganization(name, contact_email, description, website) {
-  const logo_file = 'images/community.jpg';
   const result = await pool.query(`
-    INSERT INTO organizations (name, contact_email, description, website, logo_file)
-    VALUES ($1, $2, $3, $4, $5)
+    INSERT INTO organizations (name, contact_email, description, website)
+    VALUES ($1, $2, $3, $4)
     RETURNING *
-  `, [name, contact_email, description, website || null, logo_file]);
+  `, [name, contact_email, description, website || null]);
   return result.rows[0];
 }
 
-async function updateOrganization(id, name, contact_email, description, website, logo_file) {
+async function updateOrganization(id, name, contact_email, description, website) {
   const result = await pool.query(`
     UPDATE organizations
     SET name = $1,
         contact_email = $2,
         description = $3,
-        website = $4,
-        logo_file = $5
-    WHERE organization_id = $6
+        website = $4
+    WHERE organization_id = $5
     RETURNING *
-  `, [name, contact_email, description, website || null, logo_file, id]);
+  `, [name, contact_email, description, website || null, id]);
 
   return result.rows[0];
 }

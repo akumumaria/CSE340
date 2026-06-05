@@ -31,9 +31,11 @@ async function createCategory(req, res) {
   try {
     const { category_name } = req.body;
     await categories.insertCategory(category_name.trim());
+    req.flash('success', 'Category created successfully!');
     res.redirect('/categories');
   } catch (error) {
     console.error(error);
+    req.flash('error', 'Failed to create category.');
     res.status(500).render('500');
   }
 }
@@ -55,9 +57,11 @@ async function updateCategory(req, res) {
     const categoryId = req.params.id;
     const { category_name } = req.body;
     await categories.updateCategory(categoryId, category_name.trim());
+    req.flash('success', 'Category updated successfully!');
     res.redirect('/categories');
   } catch (error) {
     console.error(error);
+    req.flash('error', 'Failed to update category.');
     res.status(500).render('500');
   }
 }

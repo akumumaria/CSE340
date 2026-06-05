@@ -4,9 +4,6 @@
     <%= organization.name %>
   </h1>
 
-  <img src="/<%= organization.logo_file || 'images/community.jpg' %>" alt="<%= organization.name %> logo"
-    style="width: 100px; height: 100px; margin-bottom: 20px;">
-
   <p>
     <%= organization.description %>
   </p>
@@ -26,6 +23,8 @@
     </a>
   </p>
   <% } %>
+
+  <p><a href="/organizations/edit-organization/<%= organization.organization_id %>">Edit Organization</a></p>
 
       <h2>Projects</h2>
 

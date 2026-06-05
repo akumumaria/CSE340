@@ -14,24 +14,20 @@
 
   <input type="hidden" name="organization_id" value="<%= organization_id %>">
 
-  <label>Name
-    <input type="text" name="name" maxlength="100" required value="<%= name %>">
+  <label>Organization Name
+    <input type="text" name="name" maxlength="100" required placeholder="e.g., Red Cross" value="<%= name %>">
   </label>
 
   <label>Contact Email
-    <input type="email" name="contact_email" maxlength="255" required value="<%= contact_email %>">
+    <input type="email" name="contact_email" maxlength="255" required placeholder="e.g., info@redcross.org" value="<%= contact_email %>">
   </label>
 
   <label>Description
-    <textarea name="description" maxlength="1000"><%= description %></textarea>
+    <textarea name="description" maxlength="1000" placeholder="Describe the organization's mission and activities"><%= description %></textarea>
   </label>
 
-  <label>Website
-    <input type="url" name="website" maxlength="255" value="<%= website %>">
-  </label>
-
-  <label>Logo filename
-    <input type="text" name="logo_file" maxlength="255" value="<%= logo_file %>">
+  <label>Website (optional)
+    <input type="url" name="website" maxlength="255" placeholder="e.g., https://www.redcross.org" value="<%= website %>">
   </label>
 
   <button type="submit">Save Organization</button>

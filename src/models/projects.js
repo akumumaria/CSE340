@@ -13,7 +13,6 @@ async function getUpcomingProjects() {
     JOIN organizations o
       ON p.organization_id = o.organization_id
     ORDER BY p.project_date
-    LIMIT 5
   `);
 
   return result.rows;
