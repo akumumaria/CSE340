@@ -1,40 +1,51 @@
 <%- include('partials/header') %>
-<main>
-    <h1><%= title %></h1>
-
-    <form action="/register" method="POST">
-        <div class="form-group">
-            <label for="name">Name</label>
-            <input
-                type="text"
-                id="name"
-                name="name"
-                required
-            />
-        </div>
-        
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input
-                type="email"
-                id="email"
-                name="email"
-                required
-            />
+<main class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Create Account</h1>
+            <p>Join us today</p>
         </div>
 
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input
-                type="password"
-                id="password"
-                name="password"
-                required
-            />
+        <form action="/register" method="POST" class="auth-form">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter your full name"
+                    required
+                />
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Create a password"
+                    required
+                />
+            </div>
+
+            <button type="submit">Create Account</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a href="/login">Sign In</a></p>
         </div>
-
-        <button type="submit">Register</button>
-    </form>
-
+    </div>
 </main>
 <%- include('partials/footer') %>
