@@ -5,15 +5,17 @@ const router = express.Router();
 const { body } = require('express-validator');
 
 const projectController = require("../controllers/projectController");
+const { requireRole } = require("../controllers/usersController.js");
 
 router.get("/projects", projectController.projectsList);
-router.get('/projects/:id/categories', projectController.assignCategoriesPage);
-router.post('/projects/:id/categories', projectController.updateProjectCategories);
+router.get('/projects/:id/categories', requireRole('admin'), projectController.assignCategoriesPage);
+router.post('/projects/:id/categories', requireRole('admin'), projectController.updateProjectCategories);
 router.get("/project/:id", projectController.projectDetailsPage);
 
-router.get("/projects/new-project", projectController.buildNewProject);
+router.get("/projects/new-project", requireRole('admin'), projectController.buildNewProject);
 router.post(
   "/projects/new-project",
+  requireRole('admin'),
   [
     body('organization_id').notEmpty().withMessage('Organization is required.'),
     body('project_title').trim().notEmpty().withMessage('Project title is required.').isLength({ min: 3, max: 150 }).withMessage('Project title must be 3-150 characters.'),
@@ -24,9 +26,10 @@ router.post(
   projectController.createProject
 );
 
-router.get("/projects/edit-project/:id", projectController.buildEditProject);
+router.get("/projects/edit-project/:id", requireRole('admin'), projectController.buildEditProject);
 router.post(
   "/projects/edit-project/:id",
+  requireRole('admin'),
   [
     body('organization_id').notEmpty().withMessage('Organization is required.'),
     body('project_title').trim().notEmpty().withMessage('Project title is required.').isLength({ min: 3, max: 150 }).withMessage('Project title must be 3-150 characters.'),

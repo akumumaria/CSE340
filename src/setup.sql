@@ -11,10 +11,16 @@ DROP TABLE IF EXISTS categories CASCADE;
 -- Drop parent table last
 DROP TABLE IF EXISTS organizations CASCADE;
 
+-- Drop user and role tables (must drop users first due to foreign key)
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS roles CASCADE;
+
 -- Reset sequences to start from 1
 ALTER SEQUENCE IF EXISTS organizations_organization_id_seq RESTART WITH 1;
 ALTER SEQUENCE IF EXISTS projects_project_id_seq RESTART WITH 1;
 ALTER SEQUENCE IF EXISTS categories_category_id_seq RESTART WITH 1;
+ALTER SEQUENCE IF EXISTS roles_role_id_seq RESTART WITH 1;
+ALTER SEQUENCE IF EXISTS users_user_id_seq RESTART WITH 1;
 
 -- =====================================================
 -- STEP 2: CREATE TABLES
@@ -50,6 +56,23 @@ CREATE TABLE project_categories (
     project_id INTEGER NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE,
     category_id INTEGER NOT NULL REFERENCES categories(category_id) ON DELETE CASCADE,
     PRIMARY KEY (project_id, category_id)
+);
+
+-- ROLES TABLE (For role-based access control)
+CREATE TABLE roles (
+    role_id SERIAL PRIMARY KEY,
+    role_name VARCHAR(50) UNIQUE NOT NULL,
+    role_description TEXT
+);
+
+-- USERS TABLE (For authentication and authorization)
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role_id INTEGER REFERENCES roles(role_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- =====================================================
@@ -155,7 +178,14 @@ VALUES
     );
 
 -- =====================================================
--- STEP 5: INSERT CATEGORIES DATA
+-- STEP 5: INSERT ROLES DATA
+-- =====================================================
+INSERT INTO roles (role_name, role_description) VALUES
+    ('user', 'Standard user with basic access'),
+    ('admin', 'Administrator with full system access');
+
+-- =====================================================
+-- STEP 6: INSERT CATEGORIES DATA
 -- =====================================================
 INSERT INTO categories (name)
 VALUES 
@@ -166,7 +196,7 @@ VALUES
     ('Infrastructure');
 
 -- =====================================================
--- STEP 6: LINK PROJECTS TO CATEGORIES
+-- STEP 7: LINK PROJECTS TO CATEGORIES
 -- =====================================================
 INSERT INTO project_categories (project_id, category_id)
 VALUES 
@@ -187,7 +217,7 @@ VALUES
     (10, 2); -- Scholarship Program -> Education
 
 -- =====================================================
--- STEP 7: VERIFY DATA (Shows record counts)
+-- STEP 8: VERIFY DATA (Shows record counts)
 -- =====================================================
 SELECT 'Organizations' as Table_Name, COUNT(*) as Record_Count FROM organizations
 UNION ALL
@@ -195,4 +225,8 @@ SELECT 'Projects', COUNT(*) FROM projects
 UNION ALL
 SELECT 'Categories', COUNT(*) FROM categories
 UNION ALL
-SELECT 'Project_Categories', COUNT(*) FROM project_categories;
+SELECT 'Project_Categories', COUNT(*) FROM project_categories
+UNION ALL
+SELECT 'Roles', COUNT(*) FROM roles
+UNION ALL
+SELECT 'Users', COUNT(*) FROM users;

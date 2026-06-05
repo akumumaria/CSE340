@@ -10,4 +10,8 @@
         <li><a href="/categories">View Categories</a></li>
     </ul>
 
+    <% if (isLoggedIn) { %>
+        <p><a href="/dashboard">My Dashboard</a></p>
+    <% } %>
+
     <%- include("partials/footer") %>
