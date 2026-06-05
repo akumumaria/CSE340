@@ -3,6 +3,8 @@ const path = require("path");
 const session = require("express-session");
 const flash = require("connect-flash");
 const flashMiddleware = require("./middlewares/flash");
+const pg = require("pg");
+const pgSession = require("connect-pg-simple")(session);
 require("dotenv").config();
 
 const app = express();
@@ -29,7 +31,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Session configuration for user sessions
+const pgPool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+
 app.use(session({
+  store: new pgSession({
+    pool: pgPool,
+    tableName: 'session',
+  }),
   secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
   resave: false,
   saveUninitialized: false,
