@@ -18,7 +18,6 @@ router.post(
   '/new-category',
   requireRole('admin'),
   validate.categoryRules(),
-  validate.checkCategoryData,
   catCon.createCategory
 );
 
@@ -28,7 +27,6 @@ router.post(
   '/edit-category/:id',
   requireRole('admin'),
   validate.categoryRules(),
-  validate.checkUpdateCategoryData,
   catCon.updateCategory
 );
 

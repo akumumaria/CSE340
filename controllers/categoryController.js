@@ -1,4 +1,5 @@
 const categories = require('../src/models/categories');
+const { validationResult } = require('express-validator');
 
 async function buildCategoryPage(req, res) {
   try {
@@ -28,6 +29,15 @@ async function buildNewCategory(req, res) {
 }
 
 async function createCategory(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.render('new-category', {
+      title: 'New Category',
+      errors,
+      category_name: req.body.category_name,
+    });
+  }
+
   try {
     const { category_name } = req.body;
     await categories.insertCategory(category_name.trim());
@@ -53,6 +63,18 @@ async function buildEditCategory(req, res) {
 }
 
 async function updateCategory(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.render('edit-category', {
+      title: 'Edit Category',
+      errors,
+      category: {
+        category_id: req.params.id,
+        name: req.body.category_name,
+      },
+    });
+  }
+
   try {
     const categoryId = req.params.id;
     const { category_name } = req.body;

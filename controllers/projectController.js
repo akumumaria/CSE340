@@ -212,6 +212,7 @@ async function updateProjectCategories(req, res) {
       await client.query('BEGIN');
       await projectModel.setProjectCategories(client, id, categoryIds);
       await client.query('COMMIT');
+      req.flash('success', 'Categories updated successfully!');
     } catch (error) {
       await client.query('ROLLBACK');
       throw error;
@@ -222,6 +223,7 @@ async function updateProjectCategories(req, res) {
     res.redirect('/project/' + id);
   } catch (error) {
     console.error(error);
+    req.flash('error', 'Failed to update categories.');
     res.status(500).render('500');
   }
 }

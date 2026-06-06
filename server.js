@@ -1,7 +1,6 @@
 const express = require("express");
 const path = require("path");
 const session = require("express-session");
-const flash = require("connect-flash");
 const flashMiddleware = require("./middlewares/flash");
 const pg = require("pg");
 const pgSession = require("connect-pg-simple")(session);
@@ -58,9 +57,6 @@ app.use(session({
 }));
 
 // Flash messages for success/error notifications
-app.use(flash());
-
-// Make flash messages available in all views
 app.use(flashMiddleware);
 
 // Middleware to set res.locals variables for all templates
