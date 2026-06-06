@@ -13,6 +13,9 @@ DROP TABLE IF EXISTS organizations CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS roles CASCADE;
 
+-- Drop session table (for express-session with connect-pg-simple)
+DROP TABLE IF EXISTS "session" CASCADE;
+
 -- Reset sequences to start from 1
 ALTER SEQUENCE IF EXISTS organizations_organization_id_seq RESTART WITH 1;
 ALTER SEQUENCE IF EXISTS projects_project_id_seq RESTART WITH 1;
@@ -66,6 +69,17 @@ CREATE TABLE users (
     role_id INTEGER REFERENCES roles(role_id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- SESSION TABLE (for express-session with connect-pg-simple)
+CREATE TABLE "session" (
+  "sid" varchar NOT NULL COLLATE "default",
+  "sess" json NOT NULL,
+  "expire" timestamp(6) NOT NULL
+) WITH (OIDS=FALSE);
+
+ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 
 -- =====================================================
 -- STEP 3: INSERT ORGANIZATIONS DATA
