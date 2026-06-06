@@ -5,21 +5,16 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <% if (success_messages && success_messages.length > 0) { %>
-        <div class="flash success">
-            <% success_messages.forEach(msg => { %>
-                <p><%= msg %></p>
-            <% }) %>
-        </div>
-    <% } %>
-
-    <% if (error_messages && error_messages.length > 0) { %>
-        <div class="flash error">
-            <% error_messages.forEach(msg => { %>
-                <p><%= msg %></p>
-            <% }) %>
-        </div>
-    <% } %>
+    <% const messages = flash(); %>
+    <% Object.keys(messages).forEach(type => { %>
+        <% if (messages[type].length > 0) { %>
+            <div class="flash <%= type %>">
+                <% messages[type].forEach(msg => { %>
+                    <p><%= msg %></p>
+                <% }); %>
+            </div>
+        <% } %>
+    <% }); %>
 
     <nav>
         <a href="/">Home</a>
