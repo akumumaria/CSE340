@@ -27,7 +27,14 @@ const processUserRegistrationForm = async (req, res) => {
         res.redirect('/login');
     } catch (error) {
         console.error('Error registering user:', error);
-        req.flash('error', 'An error occurred during registration. Please try again.');
+        
+        // Handle duplicate email error specifically
+        if (error.code === '23505' && error.constraint === 'users_email_key') {
+            req.flash('error', 'Email already exists. Please use a different email or log in.');
+        } else {
+            req.flash('error', 'An error occurred during registration. Please try again.');
+        }
+        
         res.redirect('/register');
     }
 };
