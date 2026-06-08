@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const { createUser, authenticateUser, getAllUsers } = require('../src/models/users.js');
+const volunteerModel = require('../src/models/volunteers');
 
 /**
  * Show the user registration form
@@ -102,13 +103,25 @@ const processLogout = async (req, res) => {
 /**
  * Show the user dashboard
  */
-const showDashboard = (req, res) => {
+const showDashboard = async (req, res) => {
     const user = req.session.user;
-    res.render('dashboard', {
-        title: 'Dashboard',
-        name: user.name,
-        email: user.email
-    });
+    try {
+        const volunteeredProjects = await volunteerModel.getVolunteeredProjectsByUserId(user.user_id);
+        res.render('dashboard', {
+            title: 'Dashboard',
+            name: user.name,
+            email: user.email,
+            volunteeredProjects
+        });
+    } catch (error) {
+        console.error('[ERROR showDashboard]', error.message, error.stack);
+        res.render('dashboard', {
+            title: 'Dashboard',
+            name: user.name,
+            email: user.email,
+            volunteeredProjects: []
+        });
+    }
 };
 
 /**

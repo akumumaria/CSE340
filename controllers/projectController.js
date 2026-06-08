@@ -1,6 +1,7 @@
 const projectModel = require('../src/models/projects');
 const orgModel = require('../src/models/organizations');
 const categoryModel = require('../src/models/categories');
+const volunteerModel = require('../src/models/volunteers');
 const { validationResult } = require('express-validator');
 
 function normalizeCategoryIds(value) {
@@ -31,11 +32,18 @@ async function projectDetailsPage(req, res) {
     const organization = await projectModel.getOrganizationByProjectId(id);
     const categories = await projectModel.getCategoriesByProjectId(id);
 
+    // Check if user is volunteering for this project
+    let isVolunteering = false;
+    if (req.session && req.session.user) {
+      isVolunteering = await volunteerModel.isUserVolunteering(req.session.user.user_id, id);
+    }
+
     res.render('project-details', {
       title: project.title || 'Project Details',
       project,
       organization,
       categories,
+      isVolunteering,
     });
   } catch (error) {
     console.error(error);

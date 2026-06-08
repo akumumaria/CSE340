@@ -3,6 +3,7 @@
 DROP TABLE IF EXISTS project_categories CASCADE;
 
 -- Drop dependent tables first
+DROP TABLE IF EXISTS volunteers CASCADE;
 DROP TABLE IF EXISTS projects CASCADE;
 DROP TABLE IF EXISTS categories CASCADE;
 
@@ -51,6 +52,13 @@ CREATE TABLE project_categories (
     project_id INTEGER NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE,
     category_id INTEGER NOT NULL REFERENCES categories(category_id) ON DELETE CASCADE,
     PRIMARY KEY (project_id, category_id)
+);
+
+-- Junction table for many-to-many relationship between users and projects (volunteers)
+CREATE TABLE volunteers (
+    user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    project_id INTEGER NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, project_id)
 );
 
 -- ROLES TABLE (For role-based access control)
