@@ -81,12 +81,14 @@ const mainRoutes = require("./routes/route");
 const categoryRoutes = require("./routes/categoryRoutes");
 const organizationRoutes = require("./routes/organizationRoutes");
 const projectRoutes = require("./routes/projectRoutes");
+const volunteerRoutes = require("./routes/volunteerRoutes");
 
 // Use the routes
 app.use("/", mainRoutes);
 app.use("/", categoryRoutes);
 app.use("/", organizationRoutes);
 app.use("/", projectRoutes);
+app.use("/", volunteerRoutes);
 
 // 404 error handler
 app.use((req, res) => {
