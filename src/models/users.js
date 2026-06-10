@@ -103,10 +103,63 @@ const getAllUsers = async () => {
     return result.rows;
 };
 
+/**
+ * Create a new user with a specific role in the database
+ * @param {string} name - User's display name
+ * @param {string} email - User's email (username)
+ * @param {string} passwordHash - Hashed password
+ * @param {string} role - Role name (e.g., 'user', 'admin')
+ * @returns {number} The newly created user ID
+ */
+const createUserWithRole = async (name, email, passwordHash, role) => {
+    const query = `
+        INSERT INTO users (name, email, password_hash, role_id) 
+        VALUES ($1, $2, $3, (SELECT role_id FROM roles WHERE role_name = $4)) 
+        RETURNING user_id
+    `;
+    const queryParams = [name, email, passwordHash, role];
+    
+    const result = await db.query(query, queryParams);
+
+    if (result.rows.length === 0) {
+        throw new Error('Failed to create user');
+    }
+
+    if (process.env.ENABLE_SQL_LOGGING === 'true') {
+        console.log('Created new user with ID:', result.rows[0].user_id, 'and role:', role);
+    }
+
+    return result.rows[0].user_id;
+};
+
+/**
+ * Delete a user by ID
+ * @param {number} userId - The user's ID
+ * @returns {boolean} True if deletion was successful
+ */
+const deleteUserById = async (userId) => {
+    const query = `
+        DELETE FROM users 
+        WHERE user_id = $1
+        RETURNING user_id
+    `;
+    const queryParams = [userId];
+    
+    const result = await db.query(query, queryParams);
+
+    if (process.env.ENABLE_SQL_LOGGING === 'true') {
+        console.log('Deleted user with ID:', userId);
+    }
+
+    return result.rows.length > 0;
+};
+
 module.exports = {
     createUser,
+    createUserWithRole,
     findUserByEmail,
     verifyPassword,
     authenticateUser,
-    getAllUsers
+    getAllUsers,
+    deleteUserById
 };
