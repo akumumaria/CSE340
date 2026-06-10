@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { createUser, authenticateUser, getAllUsers } = require('../src/models/users.js');
+const { createUser, authenticateUser, getAllUsers, deleteUserById } = require('../src/models/users.js');
 const volunteerModel = require('../src/models/volunteers');
 
 /**
@@ -130,14 +130,55 @@ const showDashboard = async (req, res) => {
 const showUsersPage = async (req, res) => {
     try {
         const users = await getAllUsers();
+        
+        // Get volunteer projects for each user
+        const usersWithProjects = await Promise.all(
+            users.map(async (user) => {
+                const volunteeredProjects = await volunteerModel.getVolunteeredProjectsByUserId(user.user_id);
+                return {
+                    ...user,
+                    volunteeredProjects
+                };
+            })
+        );
+        
         res.render('users', {
             title: 'Users',
-            users: users
+            users: usersWithProjects
         });
     } catch (error) {
         console.error('Error fetching users:', error);
         req.flash('error', 'An error occurred while fetching users.');
         res.redirect('/dashboard');
+    }
+};
+
+/**
+ * Delete a user (admin only)
+ */
+const deleteUser = async (req, res) => {
+    const userId = parseInt(req.params.id);
+    
+    // Prevent admin from deleting themselves
+    if (req.session.user && req.session.user.user_id === userId) {
+        req.flash('error', 'You cannot delete your own account.');
+        return res.redirect('/users');
+    }
+    
+    try {
+        const success = await deleteUserById(userId);
+        
+        if (success) {
+            req.flash('success', 'User deleted successfully.');
+        } else {
+            req.flash('error', 'User not found or could not be deleted.');
+        }
+        
+        res.redirect('/users');
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        req.flash('error', 'An error occurred while deleting the user.');
+        res.redirect('/users');
     }
 };
 
@@ -186,6 +227,7 @@ module.exports = {
     processLogout,
     showDashboard,
     showUsersPage,
+    deleteUser,
     requireLogin,
     requireRole
 };

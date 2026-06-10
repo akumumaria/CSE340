@@ -8,6 +8,7 @@ const {
   processLogout,
   showDashboard,
   showUsersPage,
+  deleteUser,
   requireLogin,
   requireRole
 } = require('../controllers/usersController.js');
@@ -34,5 +35,8 @@ router.get('/dashboard', requireLogin, showDashboard);
 
 // Protected users page (admin only)
 router.get('/users', requireRole('admin'), showUsersPage);
+
+// Delete user route (admin only)
+router.post('/users/:id/delete', requireRole('admin'), deleteUser);
 
 module.exports = router;

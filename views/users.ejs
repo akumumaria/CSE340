@@ -9,16 +9,38 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Role</th>
+                <th>Volunteer Projects</th>
                 <th>Created At</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            <% users.forEach(user => { %>
+            <% users.forEach(displayUser => { %>
                 <tr>
-                    <td><%= user.name %></td>
-                    <td><%= user.email %></td>
-                    <td><%= user.role_name %></td>
-                    <td><%= new Date(user.created_at).toLocaleDateString() %></td>
+                    <td><%= displayUser.name %></td>
+                    <td><%= displayUser.email %></td>
+                    <td><%= displayUser.role_name %></td>
+                    <td>
+                        <% if (displayUser.volunteeredProjects && displayUser.volunteeredProjects.length > 0) { %>
+                            <ul>
+                                <% displayUser.volunteeredProjects.forEach(project => { %>
+                                    <li><%= project.title %> (<%= project.organization_name %>)</li>
+                                <% }) %>
+                            </ul>
+                        <% } else { %>
+                            <em>No projects</em>
+                        <% } %>
+                    </td>
+                    <td><%= new Date(displayUser.created_at).toLocaleDateString() %></td>
+                    <td>
+                        <% if (user && user.user_id !== displayUser.user_id) { %>
+                            <form action="/users/<%= displayUser.user_id %>/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                <button type="submit">Delete</button>
+                            </form>
+                        <% } else { %>
+                            <span>-</span>
+                        <% } %>
+                    </td>
                 </tr>
             <% }) %>
         </tbody>
